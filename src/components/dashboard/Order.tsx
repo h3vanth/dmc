@@ -15,11 +15,12 @@ const Order: React.FC<{ products: ProductData[]; placed: boolean }> = ({
   } = useSelector((state: RootState) => ({
     orders: state.orders,
   }));
-  console.log(placedOrders);
+
   return (
     <Box sx={{ minWidth: 250 }}>
-      {Object.entries<any>(placed ? placedOrders : order).map(
-        ([productId, details]) => {
+      {Object.entries<any>(placed ? placedOrders : order)
+        .filter(([_, details]) => details?.quantity !== 0)
+        .map(([productId, details]) => {
           const product = products.find(
             (product) => product.productId === productId
           );
@@ -40,8 +41,7 @@ const Order: React.FC<{ products: ProductData[]; placed: boolean }> = ({
               </Grid>
             </Grid>
           );
-        }
-      )}
+        })}
     </Box>
   );
 };
