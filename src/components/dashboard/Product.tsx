@@ -13,6 +13,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 
 import { updateOrder } from "../../ducks/actions/orders";
 import { AppDispatch, RootState } from "../../ducks";
+import { truncateText } from "../../utils";
 
 export interface ProductData {
   productId: string;
@@ -21,6 +22,8 @@ export interface ProductData {
   imageSource?: string;
   alt?: string;
   isAvailable: boolean;
+  description?: string | null | undefined;
+  availableQuantity: number;
 }
 
 export type ProductAction = "add" | "remove";
@@ -37,6 +40,8 @@ const Product: React.FC<ProductAddlProps> = ({
   isAvailable,
   imageSource = "biryani.jpg",
   alt = "product cover",
+  description,
+  availableQuantity,
   setOpenDrawer,
   setSelectedProduct,
 }) => {
@@ -66,6 +71,8 @@ const Product: React.FC<ProductAddlProps> = ({
             isAvailable,
             imageSource,
             alt,
+            description,
+            availableQuantity,
           });
           setOpenDrawer(true);
         }}
@@ -73,17 +80,21 @@ const Product: React.FC<ProductAddlProps> = ({
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <CardContent sx={{ flex: "1 0 auto" }}>
             <Typography component="div" variant="h5">
-              {productName}
+              {truncateText(productName)}
             </Typography>
             <Typography
               variant="subtitle1"
               color="text.secondary"
               component="div"
             >
-              ${price}
+              ₹{price}
             </Typography>
             <Chip
-              label={isAvailable ? "Available" : "Not available"}
+              label={
+                isAvailable
+                  ? `Available (${availableQuantity})`
+                  : "Not available"
+              }
               color={isAvailable ? "success" : "error"}
               variant="outlined"
             />
@@ -92,12 +103,13 @@ const Product: React.FC<ProductAddlProps> = ({
               order[productId].quantity !== 0 && (
                 <Chip
                   label={order[productId].quantity}
-                  color="success"
                   variant="filled"
                   sx={{
                     position: "absolute",
                     right: 0,
                     top: 0,
+                    backgroundColor: "#1e1e1e",
+                    color: "#fff",
                   }}
                 />
               )}
@@ -112,7 +124,10 @@ const Product: React.FC<ProductAddlProps> = ({
           >
             <IconButton
               aria-label="add"
-              disabled={!isAvailable}
+              disabled={
+                !isAvailable ||
+                order?.[productId]?.quantity === availableQuantity
+              }
               onClick={(e) => onAddOrRemoveClick(e, "add")}
             >
               <AddIcon />
