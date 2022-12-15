@@ -1,6 +1,7 @@
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import Dashboard from "./components/dashboard";
+
 import Layout from "./components/layout";
+import AppRoutes from "./routes";
 
 const darkTheme = createTheme({
   palette: {
@@ -12,7 +13,7 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <Layout>
-        <Dashboard />
+        <AppRoutes />
       </Layout>
     </ThemeProvider>
   );
