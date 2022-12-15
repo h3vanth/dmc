@@ -10,13 +10,48 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-const pages = ["Account", "Dashboard", "Logout"];
+import { AppDispatch, RootState } from "../../ducks";
+import { logoutUser } from "../../ducks/actions/auth";
+import { getInitial } from "../../utils";
+import { account } from "../../mocks/account";
+
+const pages = [
+  {
+    page: "Account",
+    path: "/dmc/account",
+  },
+  {
+    page: "Manage products",
+    path: "/dmc/manage/products",
+  },
+  // TODO: Feature will be available in future
+  // {
+  //   page: "Manage devices",
+  //   path: "/dmc/manage/devices",
+  // },
+  {
+    page: "Dashboard",
+    path: "/dmc/",
+  },
+  {
+    page: "Logout",
+    path: "/dmc/login",
+  },
+];
 
 function AppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
+  const navigate = useNavigate();
+  const { isAuth, restrictedRoutes = [] } = useSelector((state: RootState) => ({
+    isAuth: state.auth.isAuth,
+    restrictedRoutes: state.common.restrictedRoutes,
+  }));
+  const dispatch: AppDispatch = useDispatch();
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -51,40 +86,48 @@ function AppBar() {
             DMC
           </Typography>
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar>HR</Avatar>
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {pages.map((page) => (
-                <MenuItem
-                  key={page}
-                  onClick={() => {
-                    handleCloseUserMenu();
-                  }}
-                >
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+          {isAuth && (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar>{getInitial(account.username)}</Avatar>
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {pages
+                  .filter(({ path }) => !restrictedRoutes.includes(path))
+                  .map(({ page, path }) => (
+                    <MenuItem
+                      key={page}
+                      onClick={() => {
+                        handleCloseUserMenu();
+                        if (path === "/dmc/login") {
+                          dispatch(logoutUser());
+                        }
+                        navigate(path);
+                      }}
+                    >
+                      <Typography textAlign="center">{page}</Typography>
+                    </MenuItem>
+                  ))}
+              </Menu>
+            </Box>
+          )}
         </Toolbar>
       </Container>
     </MuiAppBar>
