@@ -53,11 +53,10 @@ const placeOrder = () => {
     for (const key in order) {
       if (placedOrdersCopy[key]) {
         placedOrdersCopy[key].quantity += order[key].quantity;
-      } else {
+      } else if (order[key].quantity > 0) {
         placedOrdersCopy[key] = { ...order[key] };
       }
     }
-
     dispatch(
       orderActions.placeOrder({
         ...placedOrdersCopy,

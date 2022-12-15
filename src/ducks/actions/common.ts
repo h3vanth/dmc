@@ -3,6 +3,8 @@ import { SnackbarData } from "../../components/layout/Snackbar";
 const commonActionTypes = {
   SHOW_SNACKBAR: "SHOW_SNACKBAR",
   HIDE_SNACKBAR: "HIDE_SNACKBAR",
+  TOGGLE_LOADER_STATE: "TOGGLE_LOADER_STATE",
+  RESTRICT_ROUTES: "RESTRICT_ROUTES",
 };
 
 const commonActions = {
@@ -12,6 +14,13 @@ const commonActions = {
   }),
   hideSnackbar: () => ({
     type: commonActionTypes.HIDE_SNACKBAR,
+  }),
+  toggleLoaderState: () => ({
+    type: commonActionTypes.TOGGLE_LOADER_STATE,
+  }),
+  restrictRoutes: (...payload: string[]) => ({
+    type: commonActionTypes.RESTRICT_ROUTES,
+    payload,
   }),
 };
 
