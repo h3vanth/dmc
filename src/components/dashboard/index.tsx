@@ -1,11 +1,15 @@
 import * as React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Products from "./Products";
 import { products } from "../../mocks/products";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts, productActions } from "../../ducks/actions/products";
+import { AppDispatch, RootState } from "../../ducks";
+import { ProductData } from "./Product";
+import { commonActions } from "../../ducks/actions/common";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -44,27 +48,36 @@ function a11yProps(index: number) {
 
 const Dashboard: React.FC = () => {
   const [value, setValue] = React.useState(0);
+  const dispatch: AppDispatch = useDispatch();
+  const { products = [] } = useSelector((state: RootState) => ({
+    products: state.products,
+  }));
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  React.useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
   return (
     <>
-      <Container sx={{ mt: 2 }}>
-        <Tabs value={value} onChange={handleChange} aria-label="tabs">
-          {["All", "Available"].map((label, index) => (
-            <Tab key={label} label={label} {...a11yProps(index)} />
-          ))}
-        </Tabs>
-        <TabPanel value={value} index={0}>
-          <Products products={products} />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <Products
-            products={products.filter((product) => product.isAvailable)}
-          />
-        </TabPanel>
-      </Container>
+      <Tabs value={value} onChange={handleChange} aria-label="tabs">
+        {["All", "Available"].map((label, index) => (
+          <Tab key={label} label={label} {...a11yProps(index)} />
+        ))}
+      </Tabs>
+      <TabPanel value={value} index={0}>
+        <Products products={products} />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <Products
+          products={products.filter(
+            (product: ProductData) => product.isAvailable
+          )}
+        />
+      </TabPanel>
     </>
   );
 };
