@@ -6,12 +6,13 @@ import Drawer from "../../base/Drawer";
 import ProductDetails from "./ProductDetails";
 import IconButton from "@mui/material/IconButton";
 import FastfoodIcon from "@mui/icons-material/Fastfood";
-import FoodBankIcon from "@mui/icons-material/FoodBank";
+import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import Tooltip from "@mui/material/Tooltip";
 import Dialog from "../../base/Dialog";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../ducks";
+
 import Order from "./Order";
+import { AppDispatch, RootState } from "../../ducks";
 import { placeOrder } from "../../ducks/actions/orders";
 
 const ITEMS_PER_PAGE = 12;
@@ -63,7 +64,7 @@ const Products: React.FC<{ products: ProductData[] }> = ({ products }) => {
                   setOpenDialog(true);
                 }}
               >
-                <FastfoodIcon />
+                <ShoppingCartCheckoutIcon />
               </IconButton>
             </Tooltip>
           )}
@@ -75,7 +76,7 @@ const Products: React.FC<{ products: ProductData[] }> = ({ products }) => {
                   setOpenDialog(true);
                 }}
               >
-                <FoodBankIcon />
+                <FastfoodIcon />
               </IconButton>
             </Tooltip>
           )}
@@ -86,7 +87,7 @@ const Products: React.FC<{ products: ProductData[] }> = ({ products }) => {
           .slice(startIndex, startIndex + ITEMS_PER_PAGE)
           .map((product) => {
             return (
-              <Grid item xs={12} sm={6} md={4} key={product.productName}>
+              <Grid item xs={12} sm={6} md={4} key={product.productId}>
                 <Product
                   {...product}
                   setOpenDrawer={setOpenDrawer}
