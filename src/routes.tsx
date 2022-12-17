@@ -1,12 +1,20 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import Typography from "@mui/material/Typography";
 
 import Dashboard from "./components/dashboard";
 import Account from "./components/account";
-import InvalidRoute from "./components/error/InvalidRoute";
 import { useSelector } from "react-redux";
 import { RootState } from "./ducks";
 import Login from "./components/auth/Login";
 import ManageProducts from "./components/manage/ManageProducts";
+
+const InvalidRoute = () => {
+  return (
+    <Typography variant="h3" color="white">
+      Not a valid route!
+    </Typography>
+  );
+};
 
 const AppRoutes = () => {
   const { isAuth, restrictedRoutes = [] } = useSelector((state: RootState) => ({
