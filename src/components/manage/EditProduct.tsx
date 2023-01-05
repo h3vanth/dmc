@@ -6,19 +6,16 @@ import TextField from "../../base/TextField";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import Checkbox from "@mui/material/Checkbox";
 import DoneIcon from "@mui/icons-material/Done";
+import Switch from "@mui/material/Switch";
+import { useForm } from "react-hook-form";
 
 import { ProductData } from "../dashboard/Product";
-import Checkbox from "@mui/material/Checkbox";
-import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { commonActions } from "../../ducks/actions/common";
-import { SnackbarData } from "../layout/Snackbar";
-import Switch from "@mui/material/Switch";
-import { fetchProducts } from "../../ducks/actions/products";
-import { AppDispatch } from "../../ducks";
+import { productActions } from "../../ducks/actions/products";
+import { useAppDispatch } from "../../ducks";
 
-type Inputs = {
+export type Inputs = {
   [key: string]: string | number | boolean | null;
 };
 
@@ -30,6 +27,7 @@ interface EditableProductRowProps {
   setSelected: React.Dispatch<React.SetStateAction<readonly string[]>>;
 }
 
+// TODO: Future scope - can update image, description
 const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
   const {
     product,
@@ -39,23 +37,25 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
     selected,
     setSelected,
   } = props;
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [inEditMode, setInEditMode] = React.useState(false);
   const [available, setAvailable] = React.useState(isAvailable);
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    getValues,
+    watch,
+    reset,
   } = useForm<Inputs>({
     mode: "all",
+    reValidateMode: "onChange",
     defaultValues: {
       [`productName_${productId}`]: productName,
       [`availableQuantity_${productId}`]: availableQuantity,
       [`price_${productId}`]: price,
     },
   });
-  const quantity = getValues(`availableQuantity_${productId}`);
+  const quantity = watch(`availableQuantity_${productId}`);
 
   const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
     const selectedIndex = selected.indexOf(name);
@@ -84,35 +84,33 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
         payload[key.split("_")[0]] = data[key];
       }
       payload["isAvailable"] = available;
-      dispatch(commonActions.toggleLoaderState());
-      return fetch("http://localhost:8080/api/v1/products", {
-        body: JSON.stringify(payload),
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => {
-          const snackbarData: SnackbarData = {
-            message: "Product updated",
-            severity: "success",
-          };
-          if (!response.ok) {
-            snackbarData.message = "Product update failed. Please try again.";
-            snackbarData.severity = "error";
-          } else {
-            setInEditMode(false);
-          }
-          dispatch(commonActions.toggleLoaderState());
-          dispatch(commonActions.showSnackbar(snackbarData));
-          dispatch(fetchProducts());
-        })
-        .catch((err) => console.log(err));
+      if (
+        payload.productName != productName ||
+        payload.price != price ||
+        payload.availableQuantity != availableQuantity ||
+        payload.isAvailable != isAvailable
+      )
+        // TODO: check if passing success cb is ok
+        return dispatch(
+          productActions.updateProduct(payload, () => setInEditMode(false))
+        );
+      setInEditMode(false);
     })();
   };
 
   React.useEffect(() => {
-    if (quantity == 0) {
+    const { productId, productName, availableQuantity, price, isAvailable } =
+      product;
+    reset({
+      [`productName_${productId}`]: productName,
+      [`availableQuantity_${productId}`]: availableQuantity,
+      [`price_${productId}`]: price,
+    });
+    setAvailable(isAvailable);
+  }, [product]);
+
+  React.useEffect(() => {
+    if (!quantity || isNaN(quantity as number) || Number(quantity) === 0) {
       setAvailable(false);
     }
   }, [quantity]);
@@ -181,7 +179,11 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
             checked={available}
             onChange={() => setAvailable((available) => !available)}
             onClick={(event) => event.stopPropagation()}
-            disabled={!quantity || quantity == 0}
+            disabled={
+              !quantity ||
+              quantity == 0 ||
+              !!errors?.[`availableQuantity_${productId}`]
+            }
           />
         ) : isAvailable ? (
           <CheckCircleOutlineOutlinedIcon color="success" />

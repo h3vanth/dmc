@@ -3,9 +3,8 @@ import Typography from "@mui/material/Typography";
 
 import Dashboard from "./components/dashboard";
 import Account from "./components/account";
-import { useSelector } from "react-redux";
-import { RootState } from "./ducks";
-import Login from "./components/auth/Login";
+import { useAppSelector } from "./ducks";
+import Authenticate from "./components/auth/Authenticate";
 import ManageProducts from "./components/manage/ManageProducts";
 
 const InvalidRoute = () => {
@@ -17,7 +16,7 @@ const InvalidRoute = () => {
 };
 
 const AppRoutes = () => {
-  const { isAuth, restrictedRoutes = [] } = useSelector((state: RootState) => ({
+  const { isAuth, restrictedRoutes = [] } = useAppSelector((state) => ({
     isAuth: state.auth.isAuth,
     restrictedRoutes: state.common.restrictedRoutes,
   }));
@@ -27,11 +26,11 @@ const AppRoutes = () => {
       {isAuth && (
         <>
           <Route path="/dmc/" element={<Dashboard />} />
+          <Route path="/dmc/manage/products" element={<ManageProducts />} />
           {!restrictedRoutes.includes("/dmc/account") && (
             <>
-              <Route path="/dmc/account/" element={<Account />} />
-              <Route path="/dmc/manage/products" element={<ManageProducts />} />
               {/* TODO: Feature will be available in future */}
+              {/* <Route path="/dmc/account/" element={<Account />} /> */}
               {/* <Route path="/dmc/manage/devices" element={<Account />} /> */}
             </>
           )}
@@ -40,7 +39,7 @@ const AppRoutes = () => {
       )}
       {!isAuth && (
         <>
-          <Route path="/dmc/login" element={<Login />} />
+          <Route path="/dmc/login" element={<Authenticate />} />
           <Route path="*" element={<Navigate to="/dmc/login" />} />
         </>
       )}

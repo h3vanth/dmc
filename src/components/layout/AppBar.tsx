@@ -6,28 +6,27 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
-import { AppDispatch, RootState } from "../../ducks";
-import { logoutUser } from "../../ducks/actions/auth";
+import { useAppDispatch, useAppSelector } from "../../ducks";
 import { getInitial } from "../../utils";
 import { account } from "../../mocks/account";
+import Avatar from "../common/Avatar";
+import { authActions } from "../../ducks/actions/auth";
 
 const pages = [
-  {
-    page: "Account",
-    path: "/dmc/account",
-  },
   {
     page: "Manage products",
     path: "/dmc/manage/products",
   },
   // TODO: Feature will be available in future
+  // {
+  //   page: "Account",
+  //   path: "/dmc/account",
+  // },
   // {
   //   page: "Manage devices",
   //   path: "/dmc/manage/devices",
@@ -47,11 +46,11 @@ function AppBar() {
     null
   );
   const navigate = useNavigate();
-  const { isAuth, restrictedRoutes = [] } = useSelector((state: RootState) => ({
+  const { isAuth, restrictedRoutes = [] } = useAppSelector((state) => ({
     isAuth: state.auth.isAuth,
     restrictedRoutes: state.common.restrictedRoutes,
   }));
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -90,7 +89,7 @@ function AppBar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar>{getInitial(account.username)}</Avatar>
+                  <Avatar initials={getInitial(account.username)} />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -117,7 +116,7 @@ function AppBar() {
                       onClick={() => {
                         handleCloseUserMenu();
                         if (path === "/dmc/login") {
-                          dispatch(logoutUser());
+                          dispatch(authActions.logoutUser());
                         }
                         navigate(path);
                       }}

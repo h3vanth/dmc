@@ -1,4 +1,4 @@
-const username = {
+const email = {
   required: "Enter valid email id",
 };
 
@@ -10,4 +10,4 @@ const password = {
   },
 };
 
-export { username, password };
+export { email, password };

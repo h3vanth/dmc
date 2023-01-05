@@ -1,9 +1,88 @@
 import { AppDispatch } from "..";
+import { METHOD } from "../../constants";
+import { ERRORS } from "../../constants/errors";
+import { f3tch, joinStringArray } from "../../utils";
+import { commonActions } from "./common";
+import { productActions } from "./products";
 
 const authActionTypes = {
-  SET_AUTH_DATA: "SET_AUTH_DATA",
+  SET_AUTH_TOKEN: "SET_AUTH_TOKEN",
   LOGOUT: "LOGOUT",
   DESTROY_STORE: "DESTROY_STORE",
+};
+
+const register = (
+  payload: { email: string; password: string },
+  successCb: () => void
+) => {
+  return async (dispatch: AppDispatch) => {
+    dispatch(commonActions.toggleLoaderState());
+    const { okResponse, data } = await f3tch({
+      url: import.meta.env.VITE_REGISTER_ENDPOINT,
+      method: METHOD.POST,
+      body: payload,
+    });
+    dispatch(commonActions.toggleLoaderState());
+
+    if (okResponse) {
+      dispatch(authenticate(payload, successCb));
+    } else {
+      dispatch(
+        commonActions.showSnackbar({
+          message: data?.errorMessages
+            ? joinStringArray(data.errorMessages)
+            : ERRORS.COMMON,
+          severity: "error",
+        })
+      );
+    }
+  };
+};
+
+const authenticate = (
+  { email, password }: { email: string; password: string },
+  successCb: () => void
+) => {
+  return async (dispatch: AppDispatch) => {
+    dispatch(commonActions.toggleLoaderState());
+    const { headers, okResponse, data } = await f3tch({
+      url: import.meta.env.VITE_AUTH_ENDPOINT,
+      method: METHOD.POST,
+      headers: {
+        Authorization: `Basic ${btoa(`${email}:${password}`)}`,
+      },
+    });
+    dispatch(commonActions.toggleLoaderState());
+    if (okResponse) {
+      const token = headers?.get("authorization")?.split(" ")?.[1];
+      if (token) {
+        dispatch(
+          authActions.setAuthToken({
+            token,
+            email: data?.email,
+          })
+        );
+        successCb();
+        dispatch(productActions.fetchProducts());
+      } else {
+        dispatch(
+          commonActions.showSnackbar({
+            message: ERRORS.COMMON,
+            severity: "error",
+          })
+        );
+      }
+    } else {
+      dispatch(
+        commonActions.showSnackbar({
+          message: data?.errorMessages
+            ? joinStringArray(data.errorMessages)
+            : ERRORS.COMMON,
+          severity: "error",
+        })
+      );
+    }
+  };
 };
 
 const logoutUser = () => {
@@ -14,14 +93,16 @@ const logoutUser = () => {
 };
 
 const authActions = {
-  setAuthData: (payload: { token: string }) => ({
-    type: authActionTypes.SET_AUTH_DATA,
+  setAuthToken: (payload: { token: string; email: string }) => ({
+    type: authActionTypes.SET_AUTH_TOKEN,
     payload,
   }),
   destroyStore: () => ({
     type: authActionTypes.DESTROY_STORE,
   }),
+  register,
+  authenticate,
+  logoutUser,
 };
 
-export { logoutUser };
 export { authActionTypes, authActions };

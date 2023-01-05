@@ -2,6 +2,7 @@ import * as React from "react";
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
+import { Theme, useMediaQuery } from "@mui/material";
 
 type DrawerProps = {
   open: boolean;
@@ -18,9 +19,13 @@ const StyledDrawer = styled(MuiDrawer)(({ theme }) => ({
 }));
 
 const Drawer: React.FC<DrawerProps> = ({ open, onClose, children }) => {
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("sm")
+  );
+
   return (
     <StyledDrawer anchor={"right"} open={open} onClose={onClose}>
-      <Box sx={{ minWidth: 300 }} role="presentation">
+      <Box sx={{ minWidth: isMobile ? "unset" : 400 }} role="presentation">
         {children}
       </Box>
     </StyledDrawer>

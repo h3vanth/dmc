@@ -1,4 +1,4 @@
 export const account = {
   username: "hev@gmail.com",
-  lockpassword: "13542",
+  passcode: "13542",
 };

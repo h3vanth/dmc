@@ -2,19 +2,19 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import LockIcon from "@mui/icons-material/Lock";
 import Tooltip from "@mui/material/Tooltip";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { getInitial } from "../../utils";
-import { account } from "../../mocks/account";
 import { commonActions } from "../../ducks/actions/common";
+import Avatar from "../common/Avatar";
+import { useAppDispatch, useAppSelector } from "../../ducks";
 
 const Account = () => {
-  const dispatch = useDispatch();
+  const email = useAppSelector((state) => state.auth.email);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   return (
@@ -27,12 +27,10 @@ const Account = () => {
         sx={{ mb: 5 }}
       >
         <Grid item>
-          <Avatar sx={{ width: 50, height: 50 }}>
-            {getInitial(account.username)}
-          </Avatar>
+          <Avatar sx={{ width: 50, height: 50 }} initials={getInitial(email)} />
         </Grid>
         <Grid item>
-          <Typography color="white">{account.username}</Typography>
+          <Typography color="white">{email}</Typography>
         </Grid>
         <Grid item>
           <Tooltip title="Lock user from accessing your account">

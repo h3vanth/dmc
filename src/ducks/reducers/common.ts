@@ -4,6 +4,8 @@ export const initialState = {
   isLoading: false,
   snackbar: { message: "", severity: "success", open: false },
   restrictedRoutes: [] as string[],
+  isOnline: false,
+  sessionId: new Date().toISOString(),
 };
 
 const reducer = (
@@ -14,7 +16,7 @@ const reducer = (
     case commonActionTypes.SHOW_SNACKBAR:
       return { ...state, snackbar: { ...action.payload, open: true } };
     case commonActionTypes.HIDE_SNACKBAR:
-      return { ...state, snackbar: { ...initialState.snackbar } };
+      return { ...state, snackbar: { ...state.snackbar, open: false } };
     case commonActionTypes.TOGGLE_LOADER_STATE:
       return { ...state, isLoading: !state.isLoading };
     case commonActionTypes.RESTRICT_ROUTES:
@@ -32,6 +34,10 @@ const reducer = (
         ...state,
         restrictedRoutes,
       };
+    case commonActionTypes.TOGGLE_ONLINE_STATUS:
+      return { ...state, isOnline: !state.isOnline };
+    case commonActionTypes.SET_SESSION_ID:
+      return { ...state, sessionId: action.payload };
     default:
       return state;
   }

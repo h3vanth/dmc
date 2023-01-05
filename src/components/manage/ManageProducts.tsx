@@ -17,16 +17,11 @@ import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
 import EditableProductRow from "./EditProduct";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../ducks";
+import { useAppDispatch, useAppSelector } from "../../ducks";
 import AddProduct from "./AddProduct";
-import { ProductData } from "../dashboard/Product";
-import { commonActions } from "../../ducks/actions/common";
-import { fetchProducts } from "../../ducks/actions/products";
+import { productActions } from "../../ducks/actions/products";
 
 interface EnhancedTableProps {
   numSelected: number;
@@ -138,10 +133,10 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [openAddProduct, setOpenAddProduct] = React.useState(false);
-  const { products } = useSelector((state: RootState) => ({
+  const { products } = useAppSelector((state) => ({
     products: state.products,
   }));
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -170,29 +165,10 @@ export default function EnhancedTable() {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - products.length) : 0;
 
   const handleDelete = () => {
-    dispatch(commonActions.toggleLoaderState());
-    fetch(`http://localhost:8080/api/v1/products/${selected.join("-")}`, {
-      method: "DELETE",
-    }).then((response) => {
-      dispatch(commonActions.toggleLoaderState());
-      if (response.ok) {
-        dispatch(
-          commonActions.showSnackbar({
-            message: "Product(s) deleted",
-            severity: "success",
-          })
-        );
-        dispatch(fetchProducts());
-        setSelected([]);
-      } else {
-        dispatch(
-          commonActions.showSnackbar({
-            message: "Deletion failed",
-            severity: "error",
-          })
-        );
-      }
-    });
+    // TODO: check if passing success cb is ok
+    dispatch(
+      productActions.deleteProducts(selected.join("-"), () => setSelected([]))
+    );
   };
 
   return (
@@ -216,8 +192,6 @@ export default function EnhancedTable() {
                 rowCount={products.length}
               />
               <TableBody>
-                {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-              rows.sort(getComparator(order, orderBy)).slice() */}
                 {products
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((product, index) => {

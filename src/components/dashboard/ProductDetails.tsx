@@ -3,14 +3,17 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import IconButton from "@mui/material/IconButton";
 
 import { ProductData } from "./Product";
+import RamenDiningIcon from "@mui/icons-material/RamenDining";
 
-const ProductDetails: React.FC<{ product: ProductData | null }> = ({
-  product,
-}) => {
+const ProductDetails: React.FC<{
+  product: ProductData | null;
+  setOpenDrawer: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ product, setOpenDrawer }) => {
   const {
-    imageSource = "biryani.jpg",
     alt = "product cover",
     isAvailable,
     productName,
@@ -19,8 +22,13 @@ const ProductDetails: React.FC<{ product: ProductData | null }> = ({
     availableQuantity,
   } = product ?? {};
   return (
-    <Box sx={{ width: 450, textAlign: "center" }}>
-      <img src={imageSource} alt={alt} style={{ width: 300, marginTop: 75 }} />
+    <Box sx={{ textAlign: "center" }}>
+      <Grid container item justifyContent="right" sx={{ mt: 1 }}>
+        <IconButton onClick={() => setOpenDrawer(false)}>
+          <CloseRoundedIcon />
+        </IconButton>
+      </Grid>
+      <RamenDiningIcon fontSize="large" />
       <Typography variant="h3">{productName}</Typography>
       <Grid
         container

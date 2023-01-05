@@ -3,13 +3,10 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+
 import Products from "./Products";
-import { products } from "../../mocks/products";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts, productActions } from "../../ducks/actions/products";
-import { AppDispatch, RootState } from "../../ducks";
+import { useAppSelector } from "../../ducks";
 import { ProductData } from "./Product";
-import { commonActions } from "../../ducks/actions/common";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -29,11 +26,7 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`full-width-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
 }
@@ -48,18 +41,13 @@ function a11yProps(index: number) {
 
 const Dashboard: React.FC = () => {
   const [value, setValue] = React.useState(0);
-  const dispatch: AppDispatch = useDispatch();
-  const { products = [] } = useSelector((state: RootState) => ({
+  const { products = [] } = useAppSelector((state) => ({
     products: state.products,
   }));
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
-  React.useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
 
   return (
     <>

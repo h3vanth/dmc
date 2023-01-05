@@ -2,8 +2,9 @@ import * as React from "react";
 import Stack from "@mui/material/Stack";
 import MuiSnackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
-import { useDispatch } from "react-redux";
+
 import { commonActions } from "../../ducks/actions/common";
+import { useAppDispatch } from "../../ducks";
 
 export interface SnackbarData {
   message: string;
@@ -22,7 +23,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 const Snackbar: React.FC<SnackbarProps> = ({ open, message, severity }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const handleClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -43,7 +44,6 @@ const Snackbar: React.FC<SnackbarProps> = ({ open, message, severity }) => {
           vertical: "bottom",
           horizontal: "center",
         }}
-        transitionDuration={0}
       >
         <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
           {message}

@@ -5,20 +5,27 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 import Dialog from "../../base/Dialog";
 import TextField from "../../base/TextField";
-import { AppDispatch } from "../../ducks";
-import { commonActions } from "../../ducks/actions/common";
-import { fetchProducts } from "../../ducks/actions/products";
-import { SnackbarData } from "../layout/Snackbar";
+import { useAppDispatch } from "../../ducks";
+import { productActions } from "../../ducks/actions/products";
+import { RESET_OPTIONS } from "../../constants/form";
 
-type Inputs = {
+export type Inputs = {
   productName: string;
   availableQuantity: number;
   price: number;
   isAvailable: boolean;
   description: string | null | undefined;
+  // image: File;
+};
+
+const INITIAL_VALUES = {
+  productName: "",
+  price: 0,
+  availableQuantity: 0,
+  description: "",
+  isAvailable: false,
 };
 
 const AddProduct = ({
@@ -35,44 +42,23 @@ const AddProduct = ({
     formState: { errors, isValid },
   } = useForm<Inputs>({
     mode: "all",
-    defaultValues: {
-      productName: "",
-      price: 0,
-      availableQuantity: 0,
-      description: "",
-      isAvailable: false,
-    },
+    defaultValues: INITIAL_VALUES,
   });
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  // TODO: Reset fields on close
-  const onClose = (e: React.SyntheticEvent | {}, clicked: boolean) => {
+  const onClose = (event: React.SyntheticEvent | {}, clicked: boolean) => {
     if (clicked && isValid) {
       return handleSubmit((data) => {
-        dispatch(commonActions.toggleLoaderState());
-        return fetch("http://localhost:8080/api/v1/products", {
-          body: JSON.stringify(data),
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }).then((response) => {
-          dispatch(commonActions.toggleLoaderState());
-          const snackbarData: SnackbarData = {
-            message: "Product added",
-            severity: "success",
-          };
-          if (!response.ok) {
-            snackbarData.message = "Product addition failed. Please try again.";
-            snackbarData.severity = "error";
-          } else {
+        // TODO: check if passing success cb is ok
+        dispatch(
+          productActions.addProduct(data, () => {
             setOpen(false);
-            dispatch(fetchProducts());
-          }
-          dispatch(commonActions.showSnackbar(snackbarData));
-        });
+            reset(INITIAL_VALUES, RESET_OPTIONS);
+          })
+        );
       })();
     }
+    reset(INITIAL_VALUES, RESET_OPTIONS);
     setOpen(false);
   };
 
@@ -125,6 +111,18 @@ const AddProduct = ({
             }}
             {...register("description")}
           />
+          {/* TODO: Future scope - upload image */}
+          {/* <TextField
+            label="Upload image"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            type="file"
+            inputProps={{
+              accept: "image/*",
+            }}
+            {...register("image")}
+          /> */}
           <FormControlLabel
             control={<Switch color="primary" {...register("isAvailable")} />}
             label="Make it available"

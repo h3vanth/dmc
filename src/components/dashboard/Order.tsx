@@ -2,9 +2,9 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { useSelector } from "react-redux";
-import { RootState } from "../../ducks";
+
 import { ProductData } from "./Product";
+import { useAppSelector } from "../../ducks";
 
 const Order: React.FC<{ products: ProductData[]; placed: boolean }> = ({
   products,
@@ -12,36 +12,44 @@ const Order: React.FC<{ products: ProductData[]; placed: boolean }> = ({
 }) => {
   const {
     orders: { order, placedOrders },
-  } = useSelector((state: RootState) => ({
+  } = useAppSelector((state) => ({
     orders: state.orders,
   }));
 
   return (
     <Box sx={{ minWidth: 250 }}>
-      {Object.entries<any>(placed ? placedOrders : order)
-        .filter(([_, details]) => details?.quantity !== 0)
-        .map(([productId, details]) => {
-          const product = products.find(
-            (product) => product.productId === productId
-          );
+      {Object.entries<any>(placed ? placedOrders : order).map(
+        // for placed orders
+        // key => index, value => placed order obj
+        // for orders
+        // key => productId, value => details (order obj)
+        ([key, value]) => {
+          let product = null;
+          if (!placed) {
+            product = products.find((product) => product.productId === key);
+          }
           return (
             <Grid
-              key={productId}
+              key={key}
               container
               justifyContent="space-between"
               spacing={2}
             >
               <Grid item>
-                <Typography variant="body1">{product?.productName}</Typography>
+                <Typography variant="body1">
+                  {placed ? value.productName : product?.productName}
+                </Typography>
               </Grid>
               <Grid item>
                 <Typography variant="body1">
-                  <b>{details?.quantity}</b> * {product?.price}
+                  <b>{value.quantity}</b> *{" "}
+                  {placed ? value.price : product?.price}
                 </Typography>
               </Grid>
             </Grid>
           );
-        })}
+        }
+      )}
     </Box>
   );
 };

@@ -7,7 +7,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
 
 const BootstrapDialog = styled(MuiDialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -29,7 +28,7 @@ interface DialogProps {
   onClose: (event: React.SyntheticEvent | {}, clicked: boolean) => void;
   title: string;
   children: React.ReactNode;
-  buttonLabel: string;
+  buttonLabel?: string;
   fullScreen: boolean;
 }
 
@@ -42,7 +41,7 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
       {onClose ? (
         <IconButton
           aria-label="close"
-          onClick={(e) => onClose(e, false)}
+          onClick={(event) => onClose(event, false)}
           sx={{
             position: "absolute",
             right: 8,
@@ -65,14 +64,14 @@ const Dialog: React.FC<DialogProps> = ({
   buttonLabel,
   fullScreen = false,
 }) => {
-  const handleClose = (e: React.SyntheticEvent | {}, clicked: boolean) => {
-    onClose(e, clicked);
+  const handleClose = (event: React.SyntheticEvent | {}, clicked: boolean) => {
+    onClose(event, clicked);
   };
 
   return (
     <BootstrapDialog
-      onClose={(e) => {
-        handleClose(e, false);
+      onClose={(event) => {
+        handleClose(event, false);
       }}
       aria-labelledby="customized-dialog-title"
       open={open}
@@ -84,7 +83,7 @@ const Dialog: React.FC<DialogProps> = ({
       </BootstrapDialogTitle>
       <DialogContent dividers>{children}</DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={(e) => onClose(e, true)}>
+        <Button autoFocus onClick={(event) => onClose(event, true)}>
           {buttonLabel}
         </Button>
       </DialogActions>

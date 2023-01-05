@@ -7,27 +7,40 @@ import ProductDetails from "./ProductDetails";
 import IconButton from "@mui/material/IconButton";
 import FastfoodIcon from "@mui/icons-material/Fastfood";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
+import ClearAllIcon from "@mui/icons-material/ClearAll";
 import Tooltip from "@mui/material/Tooltip";
 import Dialog from "../../base/Dialog";
-import { useDispatch, useSelector } from "react-redux";
 
 import Order from "./Order";
-import { AppDispatch, RootState } from "../../ducks";
-import { placeOrder } from "../../ducks/actions/orders";
+import { useAppDispatch, useAppSelector } from "../../ducks";
+import { orderActions, orderActionTypes } from "../../ducks/actions/orders";
+import TextField from "../../base/TextField";
+import { commonActions, commonActionTypes } from "../../ducks/actions/common";
+import { account } from "../../mocks/account";
+import StompClient from "../../helpers/StompClient";
 
 const ITEMS_PER_PAGE = 12;
+
+enum ModalContent {
+  ReviewOrder = "Review order",
+  PlacedOrders = "Placed orders",
+  ClearSession = "Clear session",
+}
 
 const Products: React.FC<{ products: ProductData[] }> = ({ products }) => {
   const [startIndex, setStartIndex] = React.useState(0);
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [openPlacedOrders, setOpenPlacedOrders] = React.useState(false);
+  const [modalContent, setModalContent] = React.useState<ModalContent>(
+    ModalContent.ReviewOrder
+  );
   const [selectedProduct, setSelectedProduct] =
     React.useState<ProductData | null>(null);
-  const dispatch: AppDispatch = useDispatch();
+  const clearsessionpassRef = React.useRef<HTMLInputElement | null>(null);
+  const dispatch = useAppDispatch();
   const {
     orders: { order, placedOrders },
-  } = useSelector((state: RootState) => ({
+  } = useAppSelector((state) => ({
     orders: state.orders,
   }));
   const shouldShowOrder = React.useMemo(() => {
@@ -36,6 +49,18 @@ const Products: React.FC<{ products: ProductData[] }> = ({ products }) => {
     }
     return false;
   }, [order]);
+
+  const getDialogButtonLabel = () => {
+    let buttonLabel;
+    if (modalContent === ModalContent.ReviewOrder) {
+      buttonLabel = "Place order";
+    } else if (modalContent === ModalContent.PlacedOrders) {
+      buttonLabel = "Pay";
+    } else if (modalContent === ModalContent.ClearSession) {
+      buttonLabel = "Clear";
+    }
+    return buttonLabel;
+  };
 
   return (
     <>
@@ -60,8 +85,8 @@ const Products: React.FC<{ products: ProductData[] }> = ({ products }) => {
             <Tooltip title="Review order">
               <IconButton
                 onClick={() => {
-                  setOpenPlacedOrders(false);
                   setOpenDialog(true);
+                  setModalContent(ModalContent.ReviewOrder);
                 }}
               >
                 <ShoppingCartCheckoutIcon />
@@ -72,14 +97,25 @@ const Products: React.FC<{ products: ProductData[] }> = ({ products }) => {
             <Tooltip title="View placed orders">
               <IconButton
                 onClick={() => {
-                  setOpenPlacedOrders(true);
                   setOpenDialog(true);
+                  setModalContent(ModalContent.PlacedOrders);
                 }}
               >
                 <FastfoodIcon />
               </IconButton>
             </Tooltip>
           )}
+          {/* TODO: Feature will be available in future */}
+          {/* <Tooltip title="Clear session">
+            <IconButton
+              onClick={() => {
+                setOpenDialog(true);
+                setModalContent(ModalContent.ClearSession);
+              }}
+            >
+              <ClearAllIcon />
+            </IconButton>
+          </Tooltip> */}
         </Grid>
       </Grid>
       <Grid container spacing={3}>
@@ -98,21 +134,65 @@ const Products: React.FC<{ products: ProductData[] }> = ({ products }) => {
           })}
       </Grid>
       <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
-        <ProductDetails product={selectedProduct} />
+        <ProductDetails
+          product={selectedProduct}
+          setOpenDrawer={setOpenDrawer}
+        />
       </Drawer>
       <Dialog
         open={openDialog}
-        onClose={(e, clicked) => {
+        onClose={(_, clicked) => {
           setOpenDialog(false);
-          if (clicked && !openPlacedOrders) {
-            dispatch(placeOrder());
+          if (clicked) {
+            if (modalContent === ModalContent.ReviewOrder)
+              dispatch(orderActions.placeOrder());
+            else if (modalContent === ModalContent.ClearSession) {
+              if (clearsessionpassRef.current?.value !== account.passcode) {
+                return dispatch(
+                  commonActions.showSnackbar({
+                    message: "Invalid passcode. Couldn't clear session",
+                    severity: "error",
+                  })
+                );
+              }
+              dispatch({
+                type: orderActionTypes.EMPTY_ORDER,
+              });
+              dispatch({
+                type: orderActionTypes.EMPTY_PLACED_ORDERS,
+              });
+              dispatch({
+                type: commonActionTypes.SET_SESSION_ID,
+                // For now, it's ok to use this
+                payload: new Date().toISOString(),
+              });
+              dispatch(
+                commonActions.showSnackbar({
+                  message: "New session established!",
+                  severity: "info",
+                })
+              );
+            }
           }
         }}
-        buttonLabel={openPlacedOrders ? "Pay" : "Place order"}
-        title={openPlacedOrders ? "Placed orders" : "Review order"}
+        buttonLabel={getDialogButtonLabel()}
+        title={modalContent}
         fullScreen={false}
       >
-        <Order products={products} placed={openPlacedOrders} />
+        {modalContent === ModalContent.ClearSession ? (
+          <TextField
+            placeholder="Enter password"
+            name="clearsessionpass"
+            inputProps={{
+              ref: clearsessionpassRef,
+            }}
+          />
+        ) : (
+          <Order
+            products={products}
+            placed={modalContent === ModalContent.PlacedOrders}
+          />
+        )}
       </Dialog>
     </>
   );
