@@ -14,7 +14,7 @@ export type PlacedOrders = {
   price: number;
 }[];
 
-export const initialState: {
+const initialState: {
   order: Order;
   placedOrders: PlacedOrders;
 } = {
@@ -53,4 +53,4 @@ const reducer = (
   }
 };
 
-export default reducer;
+export { initialState, reducer as default };

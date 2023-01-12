@@ -5,9 +5,9 @@ import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import IconButton from "@mui/material/IconButton";
-
-import { ProductData } from "./Product";
 import RamenDiningIcon from "@mui/icons-material/RamenDining";
+
+import { ProductData } from "../../types";
 
 const ProductDetails: React.FC<{
   product: ProductData | null;

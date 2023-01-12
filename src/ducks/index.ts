@@ -12,19 +12,26 @@ const store = createStore(
   applyMiddleware(thunk)
 );
 
-store.subscribe(() => {
-  localStorage.setItem("dmc", JSON.stringify(store.getState()));
-});
+if (!import.meta.env.vitest) {
+  store.subscribe(() => {
+    localStorage.setItem("dmc", JSON.stringify(store.getState()));
+  });
+}
 
-export type GetStateType = typeof store.getState;
+type GetStateType = typeof store.getState;
 type RootState = ReturnType<typeof store.getState>;
 type AppAction = ReturnType<typeof store.dispatch>;
 
-export type AppDispatch = ThunkDispatch<RootState, any, AppAction>;
+type AppDispatch = ThunkDispatch<RootState, any, AppAction>;
 
 // Typed useSelector, useDispatch
 const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 const useAppDispatch: () => AppDispatch = useDispatch;
 
-export { useAppSelector, useAppDispatch };
-export default store;
+export {
+  useAppSelector,
+  useAppDispatch,
+  store as default,
+  type GetStateType,
+  type AppDispatch,
+};

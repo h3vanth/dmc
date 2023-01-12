@@ -14,24 +14,8 @@ import RamenDiningIcon from "@mui/icons-material/RamenDining";
 import { useAppDispatch, useAppSelector } from "../../ducks";
 import { truncateText } from "../../utils";
 import { orderActions } from "../../ducks/actions/orders";
-
-export interface ProductData {
-  productId: string;
-  productName: string;
-  price: number;
-  imageSource?: string;
-  alt?: string;
-  isAvailable: boolean;
-  description?: string | null | undefined;
-  availableQuantity: number;
-}
-
-export type ProductAction = "add" | "remove";
-
-interface ProductAddlProps extends ProductData {
-  setOpenDrawer: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedProduct: React.Dispatch<React.SetStateAction<ProductData | null>>;
-}
+import { ProductActionType, ProductAddlProps } from "../../types";
+import { ProductAction } from "../../constants/products";
 
 const Product: React.FC<ProductAddlProps> = ({
   productId,
@@ -49,7 +33,7 @@ const Product: React.FC<ProductAddlProps> = ({
 
   const onAddOrRemoveClick = (
     event: React.SyntheticEvent,
-    action: ProductAction
+    action: ProductActionType
   ) => {
     event.stopPropagation();
     dispatch(orderActions.updateOrder({ action, productId }));
@@ -128,7 +112,7 @@ const Product: React.FC<ProductAddlProps> = ({
             disabled={
               !isAvailable || order?.[productId]?.quantity === availableQuantity
             }
-            onClick={(event) => onAddOrRemoveClick(event, "add")}
+            onClick={(event) => onAddOrRemoveClick(event, ProductAction.ADD)}
           >
             <AddIcon />
           </IconButton>
@@ -139,7 +123,7 @@ const Product: React.FC<ProductAddlProps> = ({
               !order?.[productId] ||
               order[productId].quantity === 0
             }
-            onClick={(event) => onAddOrRemoveClick(event, "remove")}
+            onClick={(event) => onAddOrRemoveClick(event, ProductAction.REMOVE)}
           >
             <RemoveIcon />
           </IconButton>

@@ -3,8 +3,8 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
-import { ProductData } from "./Product";
 import { useAppSelector } from "../../ducks";
+import { ProductData } from "../../types";
 
 const Order: React.FC<{ products: ProductData[]; placed: boolean }> = ({
   products,

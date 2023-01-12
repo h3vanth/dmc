@@ -5,22 +5,13 @@ import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
 import { commonActions } from "../../ducks/actions/common";
 import { useAppDispatch } from "../../ducks";
+import { SnackbarProps } from "../../types";
 
-export interface SnackbarData {
-  message: string;
-  severity: "error" | "warning" | "info" | "success";
-}
-
-export interface SnackbarProps extends SnackbarData {
-  open: boolean;
-}
-
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref
-) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
+  (props: AlertProps, ref: React.ForwardedRef<HTMLDivElement>) => (
+    <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+  )
+);
 
 const Snackbar: React.FC<SnackbarProps> = ({ open, message, severity }) => {
   const dispatch = useAppDispatch();

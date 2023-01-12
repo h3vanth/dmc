@@ -7,10 +7,7 @@ import AppBar from "./AppBar";
 import Snackbar from "./Snackbar";
 import { useSocket } from "../../hooks";
 import { useAppSelector } from "../../ducks";
-
-type LayoutProps = {
-  children: React.ReactNode;
-};
+import { LayoutProps } from "../../types";
 
 const Layout: React.FC<LayoutProps> = (props) => {
   useSocket();
@@ -18,6 +15,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
     snackbarData: state.common.snackbar,
     isLoading: state.common.isLoading,
   }));
+
   return (
     <>
       <Backdrop

@@ -1,6 +1,5 @@
 import { AppDispatch } from "..";
-import { METHOD } from "../../constants";
-import { ERRORS } from "../../constants/errors";
+import { METHOD, ERRORS, ALERT_SEVERITY } from "../../constants";
 import { f3tch, joinStringArray } from "../../utils";
 import { commonActions } from "./common";
 import { productActions } from "./products";
@@ -32,7 +31,7 @@ const register = (
           message: data?.errorMessages
             ? joinStringArray(data.errorMessages)
             : ERRORS.COMMON,
-          severity: "error",
+          severity: ALERT_SEVERITY.ERROR,
         })
       );
     }
@@ -68,7 +67,7 @@ const authenticate = (
         dispatch(
           commonActions.showSnackbar({
             message: ERRORS.COMMON,
-            severity: "error",
+            severity: ALERT_SEVERITY.ERROR,
           })
         );
       }
@@ -78,7 +77,7 @@ const authenticate = (
           message: data?.errorMessages
             ? joinStringArray(data.errorMessages)
             : ERRORS.COMMON,
-          severity: "error",
+          severity: ALERT_SEVERITY.ERROR,
         })
       );
     }

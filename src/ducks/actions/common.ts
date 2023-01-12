@@ -1,4 +1,4 @@
-import { SnackbarData } from "../../components/layout/Snackbar";
+import { SnackbarData } from "../../types";
 
 const commonActionTypes = {
   SHOW_SNACKBAR: "SHOW_SNACKBAR",

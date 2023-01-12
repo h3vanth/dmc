@@ -1,5 +1,4 @@
-import { METHOD } from "../constants";
-import store from "../ducks";
+import { FetchArgs, Response } from "../types";
 
 const getInitial = (username: string = "") => {
   return username.charAt(0).toUpperCase();
@@ -9,45 +8,39 @@ const truncateText = (text: string = "", length: number = 12) => {
   return text.length > length ? `${text.slice(0, length)}...` : text;
 };
 
-const f3tch = async ({
-  url,
-  method,
-  body,
-  headers,
-}: {
-  url: string;
-  body?: any;
-  headers?: {
-    [key: string]: string;
+const f3tch = async ({ url, method, body, headers, token }: FetchArgs) => {
+  const returnValue: Response = {
+    data: null,
+    okResponse: false,
+    hasContent: false,
+    headers: null,
   };
-  method: METHOD;
-}) => {
-  const token = store.getState().auth.token;
+  const isFormData = body instanceof FormData;
+  console.log(isFormData);
   try {
     const response = await fetch(import.meta.env.VITE_API_URL + url, {
       method,
-      body: body && JSON.stringify(body),
+      body: body ? (isFormData ? body : JSON.stringify(body)) : null,
       headers: {
-        "Content-Type": "application/json",
+        ...(!isFormData && { "Content-Type": "application/json" }),
         ...(token && { Authorization: `Bearer ${token}` }),
         ...headers,
       },
     });
-    let data;
-    const hasContent = response.headers.get("Content-Length") !== "0";
+
+    const responseHeaders = response.headers;
+    returnValue.headers = responseHeaders;
+    returnValue.okResponse = response.ok;
+
+    const hasContent = responseHeaders.get("Content-Length") !== "0";
     if (hasContent) {
-      data = await response.json();
+      returnValue.data = await response.json();
+      returnValue.hasContent = hasContent;
     }
-    return {
-      data,
-      okResponse: response.ok,
-      hasContent,
-      headers: response.headers,
-    };
   } catch (err) {
-    return {
-      okResponse: false,
-    };
+    console.log(err);
+  } finally {
+    return returnValue;
   }
 };
 

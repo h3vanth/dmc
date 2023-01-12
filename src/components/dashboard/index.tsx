@@ -2,20 +2,12 @@ import * as React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 
 import Products from "./Products";
 import { useAppSelector } from "../../ducks";
-import { ProductData } from "./Product";
+import { TabPanelProps } from "../../types";
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  dir?: string;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
+const TabPanel: React.FC<TabPanelProps> = (props) => {
   const { children, value, index, ...other } = props;
 
   return (
@@ -29,18 +21,18 @@ function TabPanel(props: TabPanelProps) {
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
-}
+};
 
-function a11yProps(index: number) {
+const a11yProps = (index: number) => {
   return {
     id: `full-width-tab-${index}`,
     "aria-controls": `full-width-tabpanel-${index}`,
     value: index,
   };
-}
+};
 
 const Dashboard: React.FC = () => {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(1);
   const { products = [] } = useAppSelector((state) => ({
     products: state.products,
   }));
@@ -61,9 +53,8 @@ const Dashboard: React.FC = () => {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Products
-          products={products.filter(
-            (product: ProductData) => product.isAvailable
-          )}
+          products={products.filter((product) => product.isAvailable)}
+          available
         />
       </TabPanel>
     </>

@@ -1,8 +1,9 @@
+import { ALERT_SEVERITY } from "../../constants";
 import { commonActionTypes } from "../actions/common";
 
-export const initialState = {
+const initialState = {
   isLoading: false,
-  snackbar: { message: "", severity: "success", open: false },
+  snackbar: { message: "", severity: ALERT_SEVERITY.SUCCESS, open: false },
   restrictedRoutes: [] as string[],
   isOnline: false,
   sessionId: new Date().toISOString(),
@@ -43,4 +44,4 @@ const reducer = (
   }
 };
 
-export default reducer;
+export { initialState, reducer as default };

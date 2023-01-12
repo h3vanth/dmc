@@ -2,9 +2,9 @@ import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
 import MuiAvatar from "@mui/material/Avatar";
-import { Theme } from "@mui/system/createTheme";
-import { SxProps } from "@mui/material";
+
 import { useAppSelector } from "../../ducks";
+import { AvatarProps } from "../../types";
 
 const StyledBadge = styled(Badge)(({ theme, color }) => ({
   "& .MuiBadge-badge": {
@@ -13,13 +13,6 @@ const StyledBadge = styled(Badge)(({ theme, color }) => ({
     boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
   },
 }));
-
-interface AvatarProps {
-  sx?: SxProps<Theme> | undefined;
-  src?: string;
-  alt?: string;
-  initials?: string;
-}
 
 const Avatar: React.FC<AvatarProps> = ({ src, alt, initials, sx }) => {
   const isOnline = useAppSelector((state) => state.common.isOnline);

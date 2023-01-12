@@ -11,21 +11,9 @@ import DoneIcon from "@mui/icons-material/Done";
 import Switch from "@mui/material/Switch";
 import { useForm } from "react-hook-form";
 
-import { ProductData } from "../dashboard/Product";
 import { productActions } from "../../ducks/actions/products";
 import { useAppDispatch } from "../../ducks";
-
-export type Inputs = {
-  [key: string]: string | number | boolean | null;
-};
-
-interface EditableProductRowProps {
-  product: ProductData;
-  labelId: string;
-  isItemSelected: boolean;
-  selected: readonly string[];
-  setSelected: React.Dispatch<React.SetStateAction<readonly string[]>>;
-}
+import { EditableProductRowProps, Obj } from "../../types";
 
 // TODO: Future scope - can update image, description
 const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
@@ -46,7 +34,7 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
     formState: { errors, isValid },
     watch,
     reset,
-  } = useForm<Inputs>({
+  } = useForm<Obj>({
     mode: "all",
     reValidateMode: "onChange",
     defaultValues: {
@@ -79,7 +67,7 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
 
   const submit = () => {
     handleSubmit((data) => {
-      const payload: Inputs = { ...product };
+      const payload: Obj = { ...product };
       for (const key in data) {
         payload[key.split("_")[0]] = data[key];
       }

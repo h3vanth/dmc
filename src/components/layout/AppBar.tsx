@@ -16,32 +16,9 @@ import { getInitial } from "../../utils";
 import { account } from "../../mocks/account";
 import Avatar from "../common/Avatar";
 import { authActions } from "../../ducks/actions/auth";
+import { PAGES } from "../../constants";
 
-const pages = [
-  {
-    page: "Manage products",
-    path: "/dmc/manage/products",
-  },
-  // TODO: Feature will be available in future
-  // {
-  //   page: "Account",
-  //   path: "/dmc/account",
-  // },
-  // {
-  //   page: "Manage devices",
-  //   path: "/dmc/manage/devices",
-  // },
-  {
-    page: "Dashboard",
-    path: "/dmc/",
-  },
-  {
-    page: "Logout",
-    path: "/dmc/login",
-  },
-];
-
-function AppBar() {
+const AppBar: React.FC = () => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
@@ -108,22 +85,22 @@ function AppBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {pages
-                  .filter(({ path }) => !restrictedRoutes.includes(path))
-                  .map(({ page, path }) => (
-                    <MenuItem
-                      key={page}
-                      onClick={() => {
-                        handleCloseUserMenu();
-                        if (path === "/dmc/login") {
-                          dispatch(authActions.logoutUser());
-                        }
-                        navigate(path);
-                      }}
-                    >
-                      <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>
-                  ))}
+                {PAGES.filter(
+                  ({ path }) => !restrictedRoutes.includes(path)
+                ).map(({ page, path }) => (
+                  <MenuItem
+                    key={page}
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      if (path === "/login") {
+                        dispatch(authActions.logoutUser());
+                      }
+                      navigate(path);
+                    }}
+                  >
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))}
               </Menu>
             </Box>
           )}
@@ -131,5 +108,5 @@ function AppBar() {
       </Container>
     </MuiAppBar>
   );
-}
+};
 export default AppBar;

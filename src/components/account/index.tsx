@@ -11,8 +11,9 @@ import { getInitial } from "../../utils";
 import { commonActions } from "../../ducks/actions/common";
 import Avatar from "../common/Avatar";
 import { useAppDispatch, useAppSelector } from "../../ducks";
+import { ALERT_SEVERITY } from "../../constants";
 
-const Account = () => {
+const Account: React.FC = () => {
   const email = useAppSelector((state) => state.auth.email);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -38,20 +39,20 @@ const Account = () => {
               onClick={() => {
                 dispatch(
                   commonActions.restrictRoutes(
-                    "/dmc/account",
-                    "/dmc/login",
-                    "/dmc/manage/products"
+                    "/account",
+                    "/login",
+                    "/manage/products"
                     // TODO: Feature will be available in future
-                    // "/dmc/manage/devices"
+                    // "/manage/devices"
                   )
                 );
                 dispatch(
                   commonActions.showSnackbar({
                     message: "Only dashboard will be accessible now",
-                    severity: "info",
+                    severity: ALERT_SEVERITY.INFO,
                   })
                 );
-                navigate("/dmc/");
+                navigate("/");
               }}
             >
               <LockIcon />

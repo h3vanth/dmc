@@ -1,7 +1,7 @@
 import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Pagination from "@mui/material/Pagination";
-import Product, { ProductData } from "./Product";
+import Product from "./Product";
 import Drawer from "../../base/Drawer";
 import ProductDetails from "./ProductDetails";
 import IconButton from "@mui/material/IconButton";
@@ -9,25 +9,30 @@ import FastfoodIcon from "@mui/icons-material/Fastfood";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
 import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import { useNavigate } from "react-router-dom";
+
 import Dialog from "../../base/Dialog";
+import TextField from "../../base/TextField";
 
 import Order from "./Order";
 import { useAppDispatch, useAppSelector } from "../../ducks";
 import { orderActions, orderActionTypes } from "../../ducks/actions/orders";
-import TextField from "../../base/TextField";
 import { commonActions, commonActionTypes } from "../../ducks/actions/common";
 import { account } from "../../mocks/account";
 import StompClient from "../../helpers/StompClient";
+import { ProductData } from "../../types";
+import { ModalContent } from "../../constants/orders";
+import { ALERT_SEVERITY } from "../../constants";
 
 const ITEMS_PER_PAGE = 12;
 
-enum ModalContent {
-  ReviewOrder = "Review order",
-  PlacedOrders = "Placed orders",
-  ClearSession = "Clear session",
-}
-
-const Products: React.FC<{ products: ProductData[] }> = ({ products }) => {
+const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
+  products,
+  available = false,
+}) => {
+  const navigate = useNavigate();
   const [startIndex, setStartIndex] = React.useState(0);
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -132,6 +137,25 @@ const Products: React.FC<{ products: ProductData[] }> = ({ products }) => {
               </Grid>
             );
           })}
+        {products.length === 0 && (
+          <Grid item xs={12}>
+            <Typography color="white">
+              No product available.{" "}
+              {!available && (
+                <>
+                  To add one click{" "}
+                  <Link
+                    onClick={() => navigate("/manage/products")}
+                    sx={{ cursor: "pointer" }}
+                  >
+                    here
+                  </Link>
+                  .
+                </>
+              )}
+            </Typography>
+          </Grid>
+        )}
       </Grid>
       <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
         <ProductDetails
@@ -151,7 +175,7 @@ const Products: React.FC<{ products: ProductData[] }> = ({ products }) => {
                 return dispatch(
                   commonActions.showSnackbar({
                     message: "Invalid passcode. Couldn't clear session",
-                    severity: "error",
+                    severity: ALERT_SEVERITY.ERROR,
                   })
                 );
               }
@@ -169,7 +193,7 @@ const Products: React.FC<{ products: ProductData[] }> = ({ products }) => {
               dispatch(
                 commonActions.showSnackbar({
                   message: "New session established!",
-                  severity: "info",
+                  severity: ALERT_SEVERITY.INFO,
                 })
               );
             }

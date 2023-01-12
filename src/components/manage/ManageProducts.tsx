@@ -22,14 +22,9 @@ import EditableProductRow from "./EditProduct";
 import { useAppDispatch, useAppSelector } from "../../ducks";
 import AddProduct from "./AddProduct";
 import { productActions } from "../../ducks/actions/products";
+import { EnhancedTableProps, EnhancedTableToolbarProps } from "../../types";
 
-interface EnhancedTableProps {
-  numSelected: number;
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  rowCount: number;
-}
-
-function EnhancedTableHead(props: EnhancedTableProps) {
+const EnhancedTableHead: React.FC<EnhancedTableProps> = (props) => {
   const { onSelectAllClick, numSelected, rowCount } = props;
 
   return (
@@ -64,15 +59,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
       </TableRow>
     </TableHead>
   );
-}
+};
 
-interface EnhancedTableToolbarProps {
-  numSelected: number;
-  setOpenAddProduct: React.Dispatch<React.SetStateAction<boolean>>;
-  handleDelete: () => void;
-}
-
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
+const EnhancedTableToolbar: React.FC<EnhancedTableToolbarProps> = (props) => {
   const { numSelected, setOpenAddProduct, handleDelete } = props;
 
   return (
@@ -126,9 +115,9 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       )}
     </Toolbar>
   );
-}
+};
 
-export default function EnhancedTable() {
+const EnhancedTable: React.FC = () => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -235,4 +224,6 @@ export default function EnhancedTable() {
       <AddProduct open={openAddProduct} setOpen={setOpenAddProduct} />
     </>
   );
-}
+};
+
+export default EnhancedTable;

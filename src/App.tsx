@@ -9,7 +9,7 @@ const darkTheme = createTheme({
   },
 });
 
-function App() {
+const App: React.FC = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <Layout>
@@ -17,6 +17,6 @@ function App() {
       </Layout>
     </ThemeProvider>
   );
-}
+};
 
 export default App;

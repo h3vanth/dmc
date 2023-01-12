@@ -27,5 +27,4 @@ const rootReducer = (state: any, action: any) => {
   return appReducer(state, action);
 };
 
-export { INITIAL_STATE };
-export default rootReducer;
+export { INITIAL_STATE, rootReducer as default };

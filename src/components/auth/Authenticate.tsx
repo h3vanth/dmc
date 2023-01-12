@@ -11,14 +11,9 @@ import { authActions } from "../../ducks/actions/auth";
 import { password, email } from "../../validations/auth";
 import { RESET_OPTIONS } from "../../constants/form";
 import { useAppDispatch } from "../../ducks";
+import { AuthInputs } from "../../types";
 
-type Inputs = {
-  email: string;
-  password: string;
-  confirmpassword: string;
-};
-
-const Authenticate = () => {
+const Authenticate: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isRegistration, setIsRegistration] = React.useState(false);
@@ -28,13 +23,13 @@ const Authenticate = () => {
     handleSubmit,
     formState: { errors, isValid },
     watch,
-  } = useForm<Inputs>({
+  } = useForm<AuthInputs>({
     // Validation will trigger on the blur and change events.
     mode: "all",
   });
   const pass = watch("password");
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<AuthInputs> = (data) => {
     let action = authActions.authenticate;
     if (isRegistration) {
       action = authActions.register;
@@ -46,7 +41,7 @@ const Authenticate = () => {
           password: data.password,
         },
         () => {
-          navigate("/dmc/");
+          navigate("/");
         }
       )
     );

@@ -1,6 +1,6 @@
 import { authActionTypes } from "../actions/auth";
 
-export const initialState = {
+const initialState = {
   isAuth: false,
   token: "",
   email: "",
@@ -25,4 +25,4 @@ const reducer = (
   }
 };
 
-export default reducer;
+export { initialState, reducer as default };

@@ -8,6 +8,8 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
+import { DialogProps, DialogTitleProps } from "../types";
+
 const BootstrapDialog = styled(MuiDialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -17,22 +19,7 @@ const BootstrapDialog = styled(MuiDialog)(({ theme }) => ({
   },
 }));
 
-interface DialogTitleProps {
-  id: string;
-  children?: React.ReactNode;
-  onClose: (event: React.SyntheticEvent, clicked: boolean) => void;
-}
-
-interface DialogProps {
-  open: boolean;
-  onClose: (event: React.SyntheticEvent | {}, clicked: boolean) => void;
-  title: string;
-  children: React.ReactNode;
-  buttonLabel?: string;
-  fullScreen: boolean;
-}
-
-function BootstrapDialogTitle(props: DialogTitleProps) {
+const BootstrapDialogTitle: React.FC<DialogTitleProps> = (props) => {
   const { children, onClose, ...other } = props;
 
   return (
@@ -54,7 +41,7 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
       ) : null}
     </DialogTitle>
   );
-}
+};
 
 const Dialog: React.FC<DialogProps> = ({
   open,

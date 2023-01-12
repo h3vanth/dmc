@@ -25,13 +25,13 @@ const AppRoutes = () => {
     <Routes>
       {isAuth && (
         <>
-          <Route path="/dmc/" element={<Dashboard />} />
-          <Route path="/dmc/manage/products" element={<ManageProducts />} />
-          {!restrictedRoutes.includes("/dmc/account") && (
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/manage/products" element={<ManageProducts />} />
+          {!restrictedRoutes.includes("/account") && (
             <>
               {/* TODO: Feature will be available in future */}
-              {/* <Route path="/dmc/account/" element={<Account />} /> */}
-              {/* <Route path="/dmc/manage/devices" element={<Account />} /> */}
+              {/* <Route path="/account/" element={<Account />} /> */}
+              {/* <Route path="/manage/devices" element={<Account />} /> */}
             </>
           )}
           <Route path="*" element={<InvalidRoute />} />
@@ -39,8 +39,8 @@ const AppRoutes = () => {
       )}
       {!isAuth && (
         <>
-          <Route path="/dmc/login" element={<Authenticate />} />
-          <Route path="*" element={<Navigate to="/dmc/login" />} />
+          <Route path="/login" element={<Authenticate />} />
+          <Route path="*" element={<Navigate to="/login" />} />
         </>
       )}
     </Routes>

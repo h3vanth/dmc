@@ -1,11 +1,10 @@
 import { AppDispatch, GetStateType } from "..";
-import { ProductData } from "../../components/dashboard/Product";
-import { Inputs as AddProductInputs } from "../../components/manage/AddProduct";
-import { Inputs as EditProductInputs } from "../../components/manage/EditProduct";
-import { METHOD } from "../../constants";
-import { ERRORS } from "../../constants/errors";
+import { ALERT_SEVERITY, METHOD } from "../../constants";
+import { ERRORS } from "../../constants";
 import StompClient from "../../helpers/StompClient";
+import { AddProductInputs, Obj, ProductData } from "../../types";
 import { f3tch, joinStringArray } from "../../utils";
+import { selectToken } from "../selectors";
 import { commonActions } from "./common";
 import { orderActionTypes } from "./orders";
 
@@ -16,11 +15,12 @@ const productActionTypes = {
 };
 
 const fetchProducts = () => {
-  return async (dispatch: AppDispatch) => {
+  return async (dispatch: AppDispatch, getState: GetStateType) => {
     dispatch(commonActions.toggleLoaderState());
     const { data, okResponse } = await f3tch({
       url: import.meta.env.VITE_PRODUCTS_ENDPOINT,
       method: METHOD.GET,
+      token: selectToken(getState()),
     });
     dispatch(commonActions.toggleLoaderState());
     if (okResponse) {
@@ -34,7 +34,7 @@ const fetchProducts = () => {
           message: data?.errorMessages
             ? joinStringArray(data.errorMessages)
             : ERRORS.COMMON,
-          severity: "error",
+          severity: ALERT_SEVERITY.ERROR,
         })
       );
     }
@@ -73,22 +73,23 @@ const setProducts = (products: ProductData[]) => {
         commonActions.showSnackbar({
           message:
             "Some items became unavailable. We adjusted your cart accordingly.",
-          severity: "info",
+          severity: ALERT_SEVERITY.INFO,
         })
       );
   };
 };
 
 const addProduct = (
-  product: AddProductInputs,
+  formData: FormData,
   successCb?: undefined | (() => void)
 ) => {
-  return async (dispatch: AppDispatch) => {
+  return async (dispatch: AppDispatch, getState: GetStateType) => {
     dispatch(commonActions.toggleLoaderState());
     const { data, okResponse } = await f3tch({
       url: import.meta.env.VITE_PRODUCTS_ENDPOINT,
       method: METHOD.POST,
-      body: product,
+      body: formData,
+      token: selectToken(getState()),
     });
     dispatch(commonActions.toggleLoaderState());
     if (okResponse) {
@@ -96,7 +97,7 @@ const addProduct = (
       dispatch(
         commonActions.showSnackbar({
           message: "Product added",
-          severity: "success",
+          severity: ALERT_SEVERITY.SUCCESS,
         })
       );
       if (successCb) successCb();
@@ -106,23 +107,21 @@ const addProduct = (
           message: data?.errorMessages
             ? joinStringArray(data.errorMessages)
             : ERRORS.COMMON,
-          severity: "error",
+          severity: ALERT_SEVERITY.ERROR,
         })
       );
     }
   };
 };
 
-const updateProduct = (
-  product: EditProductInputs,
-  successCb?: SuccessCallback
-) => {
-  return async (dispatch: AppDispatch) => {
+const updateProduct = (product: Obj, successCb?: SuccessCallback) => {
+  return async (dispatch: AppDispatch, getState: GetStateType) => {
     dispatch(commonActions.toggleLoaderState());
     const { data, okResponse } = await f3tch({
       url: import.meta.env.VITE_PRODUCTS_ENDPOINT,
       method: METHOD.PUT,
       body: product,
+      token: selectToken(getState()),
     });
     dispatch(commonActions.toggleLoaderState());
     if (okResponse) {
@@ -130,7 +129,7 @@ const updateProduct = (
       dispatch(
         commonActions.showSnackbar({
           message: "Product updated",
-          severity: "success",
+          severity: ALERT_SEVERITY.SUCCESS,
         })
       );
       if (successCb) successCb();
@@ -140,7 +139,7 @@ const updateProduct = (
           message: data?.errorMessages
             ? joinStringArray(data.errorMessages)
             : ERRORS.COMMON,
-          severity: "error",
+          severity: ALERT_SEVERITY.ERROR,
         })
       );
     }
@@ -148,11 +147,12 @@ const updateProduct = (
 };
 
 const deleteProducts = (productIds: string, successCb?: SuccessCallback) => {
-  return async (dispatch: AppDispatch) => {
+  return async (dispatch: AppDispatch, getState: GetStateType) => {
     dispatch(commonActions.toggleLoaderState());
     const { data, okResponse } = await f3tch({
       url: import.meta.env.VITE_PRODUCTS_ENDPOINT + `/${productIds}`,
       method: METHOD.DELETE,
+      token: selectToken(getState()),
     });
     dispatch(commonActions.toggleLoaderState());
     if (okResponse) {
@@ -160,7 +160,7 @@ const deleteProducts = (productIds: string, successCb?: SuccessCallback) => {
       dispatch(
         commonActions.showSnackbar({
           message: "Product(s) deleted",
-          severity: "success",
+          severity: ALERT_SEVERITY.SUCCESS,
         })
       );
       if (successCb) successCb();
@@ -170,7 +170,7 @@ const deleteProducts = (productIds: string, successCb?: SuccessCallback) => {
           message: data?.errorMessages
             ? joinStringArray(data.errorMessages)
             : ERRORS.COMMON,
-          severity: "error",
+          severity: ALERT_SEVERITY.ERROR,
         })
       );
     }

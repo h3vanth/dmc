@@ -4,11 +4,7 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import { Theme, useMediaQuery } from "@mui/material";
 
-type DrawerProps = {
-  open: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-};
+import { DrawerProps } from "../types";
 
 const StyledDrawer = styled(MuiDrawer)(({ theme }) => ({
   [theme.breakpoints.down("sm")]: {
@@ -19,7 +15,7 @@ const StyledDrawer = styled(MuiDrawer)(({ theme }) => ({
 }));
 
 const Drawer: React.FC<DrawerProps> = ({ open, onClose, children }) => {
-  const isMobile = useMediaQuery((theme: Theme) =>
+  const isMobile: boolean = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down("sm")
   );
 

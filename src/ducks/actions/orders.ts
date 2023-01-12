@@ -1,9 +1,10 @@
 import { AppDispatch, GetStateType } from "..";
-import { ProductAction } from "../../components/dashboard/Product";
-import { METHOD } from "../../constants";
+import { ALERT_SEVERITY, METHOD } from "../../constants";
 import StompClient from "../../helpers/StompClient";
+import { ProductActionType } from "../../types";
 import { f3tch } from "../../utils";
 import { PlacedOrders } from "../reducers/orders";
+import { selectToken } from "../selectors";
 import { commonActions } from "./common";
 
 const orderActionTypes = {
@@ -13,7 +14,10 @@ const orderActionTypes = {
   EMPTY_PLACED_ORDERS: "EMPTY_PLACED_ORDERS",
 };
 
-const updateOrder = (payload: { action: ProductAction; productId: string }) => {
+const updateOrder = (payload: {
+  action: ProductActionType;
+  productId: string;
+}) => {
   return (dispatch: AppDispatch, getState: GetStateType) => {
     dispatch(commonActions.hideSnackbar());
     const order = JSON.parse(JSON.stringify(getState().orders.order));
@@ -51,7 +55,7 @@ const updateOrder = (payload: { action: ProductAction; productId: string }) => {
         message: `Product ${action === "add" ? "added" : "removed"} ${
           action === "add" ? "to" : "from"
         } cart`,
-        severity: "success",
+        severity: ALERT_SEVERITY.SUCCESS,
       })
     );
   };
@@ -89,9 +93,10 @@ const placeOrder = () => {
     }
 
     const { okResponse, data } = await f3tch({
-      url: import.meta.env.VITE_PLACE_ORDER,
+      url: import.meta.env.VITE_PLACE_ORDER_ENDPOINT,
       method: METHOD.POST,
       body: orderedProducts,
+      token: selectToken(state),
     });
 
     if (okResponse) {
@@ -102,7 +107,7 @@ const placeOrder = () => {
       dispatch(
         commonActions.showSnackbar({
           message: "Order placed",
-          severity: "success",
+          severity: ALERT_SEVERITY.SUCCESS,
         })
       );
       dispatch({
@@ -113,7 +118,7 @@ const placeOrder = () => {
       dispatch(
         commonActions.showSnackbar({
           message: "Oops! Couldn't place order. Please try again.",
-          severity: "error",
+          severity: ALERT_SEVERITY.ERROR,
         })
       );
     }

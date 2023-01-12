@@ -1,7 +1,7 @@
-import { ProductData } from "../../components/dashboard/Product";
+import { ProductData } from "../../types";
 import { productActionTypes } from "../actions/products";
 
-export const initialState: ProductData[] = [];
+const initialState: ProductData[] = [];
 
 const reducer = (
   state = initialState,
@@ -15,4 +15,4 @@ const reducer = (
   }
 };
 
-export default reducer;
+export { initialState, reducer as default };

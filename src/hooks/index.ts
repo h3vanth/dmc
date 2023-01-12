@@ -3,7 +3,7 @@ import * as React from "react";
 import { useAppSelector } from "../ducks";
 import StompClient from "../helpers/StompClient";
 
-export const useSocket = () => {
+const useSocket = () => {
   const { isAuth } = useAppSelector((state) => ({
     isAuth: state.auth.isAuth,
   }));
@@ -13,3 +13,5 @@ export const useSocket = () => {
     StompClient.initialize();
   }, [isAuth]);
 };
+
+export { useSocket };
