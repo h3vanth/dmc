@@ -26,6 +26,8 @@ This application provides an interface where you can manage food menu, create or
 
 ### dmc-service
 
+**You need Java installed to run dmc-service.**
+
 1. Download mongodb server or you can make use of cloud server https://www.mongodb.com/cloud/atlas/register
 2. Clone dmc-service repository
 3. Switch to **_development_** branch
