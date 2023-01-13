@@ -27,6 +27,7 @@ export interface DialogProps {
   children: React.ReactNode;
   buttonLabel?: string;
   fullScreen: boolean;
+  disableButton?: boolean;
 }
 
 export interface DrawerProps {
@@ -103,7 +104,7 @@ export interface AddProductInputs {
   price: number;
   isAvailable: boolean;
   description: string | null | undefined;
-  image: File;
+  files: FileList;
 }
 
 export type Obj = {

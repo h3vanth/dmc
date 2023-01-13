@@ -50,6 +50,7 @@ const Dialog: React.FC<DialogProps> = ({
   children,
   buttonLabel,
   fullScreen = false,
+  disableButton = false,
 }) => {
   const handleClose = (event: React.SyntheticEvent | {}, clicked: boolean) => {
     onClose(event, clicked);
@@ -70,7 +71,11 @@ const Dialog: React.FC<DialogProps> = ({
       </BootstrapDialogTitle>
       <DialogContent dividers>{children}</DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={(event) => onClose(event, true)}>
+        <Button
+          autoFocus
+          onClick={(event) => onClose(event, true)}
+          disabled={disableButton}
+        >
           {buttonLabel}
         </Button>
       </DialogActions>

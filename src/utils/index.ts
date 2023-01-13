@@ -16,7 +16,7 @@ const f3tch = async ({ url, method, body, headers, token }: FetchArgs) => {
     headers: null,
   };
   const isFormData = body instanceof FormData;
-  console.log(isFormData);
+
   try {
     const response = await fetch(import.meta.env.VITE_API_URL + url, {
       method,

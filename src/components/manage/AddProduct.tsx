@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
+import Container from "@mui/material/Container";
 import { useForm } from "react-hook-form";
 
 import Dialog from "../../base/Dialog";
@@ -10,6 +11,7 @@ import TextField from "../../base/TextField";
 import { useAppDispatch } from "../../ducks";
 import { productActions } from "../../ducks/actions/products";
 import { RESET_OPTIONS } from "../../constants/form";
+// TODO: add the types file in tsconfig
 import { AddProductInputs } from "../../types";
 
 const INITIAL_VALUES = {
@@ -18,6 +20,7 @@ const INITIAL_VALUES = {
   availableQuantity: 0,
   description: "",
   isAvailable: false,
+  files: undefined,
 };
 
 const AddProduct = ({
@@ -32,34 +35,44 @@ const AddProduct = ({
     handleSubmit,
     reset,
     formState: { errors, isValid },
+    watch,
+    setValue,
   } = useForm<AddProductInputs>({
     mode: "all",
     defaultValues: INITIAL_VALUES,
   });
   const dispatch = useAppDispatch();
+  const [isAvailable, availableQuantity, files] = watch([
+    "isAvailable",
+    "availableQuantity",
+    "files",
+  ]);
+  const invalidQuantity =
+    Number(availableQuantity) === 0 || !!errors?.["availableQuantity"];
+
+  React.useEffect(() => {
+    if (invalidQuantity) {
+      setValue("isAvailable", false);
+    }
+  }, [invalidQuantity]);
+
+  React.useEffect(() => {
+    if (open) {
+      reset(INITIAL_VALUES, RESET_OPTIONS);
+    }
+  }, [open]);
 
   const onClose = (event: React.SyntheticEvent | {}, clicked: boolean) => {
     if (clicked && isValid) {
       return handleSubmit((data) => {
         const formData = new FormData();
-        const {
-          productName,
-          price,
-          availableQuantity,
-          description,
-          isAvailable,
-        } = data;
-        formData.append(
-          "product",
-          JSON.stringify({
-            productName,
-            price,
-            availableQuantity,
-            description,
-            isAvailable,
-          })
-        );
-        formData.append("file", data.image);
+
+        formData.append("productName", data.productName);
+        formData.append("price", data.price.toString());
+        formData.append("availableQuantity", data.availableQuantity.toString());
+        formData.append("description", data.description ?? "");
+        formData.append("isAvailable", data.isAvailable ? "true" : "false");
+        if (data.files?.[0]) formData.append("image", data.files[0]);
 
         // TODO: check if passing success cb is ok
         dispatch(
@@ -72,7 +85,6 @@ const AddProduct = ({
     } else if (!clicked) {
       setOpen(false);
     }
-    reset(INITIAL_VALUES, RESET_OPTIONS);
   };
 
   return (
@@ -82,9 +94,19 @@ const AddProduct = ({
       fullScreen={false}
       buttonLabel="Add"
       title="Add product"
+      disableButton={!isValid}
     >
       <Box sx={{ minWidth: 300, p: 2 }}>
         <Stack>
+          {files?.[0] && (
+            <Container sx={{ textAlign: "center" }}>
+              <img
+                src={URL.createObjectURL(files[0])}
+                alt="Uploaded image"
+                style={{ maxWidth: 200, maxHeight: 200 }}
+              />
+            </Container>
+          )}
           <TextField
             label="Product name"
             {...register("productName", {
@@ -118,12 +140,23 @@ const AddProduct = ({
             inputProps={{
               accept: "image/*",
             }}
-            {...register("image")}
+            {...register("files")}
           />
           <FormControlLabel
-            control={<Switch color="primary" {...register("isAvailable")} />}
+            control={
+              <Switch
+                color="primary"
+                checked={isAvailable}
+                {...register("isAvailable", {
+                  onChange: (event) => {
+                    setValue("isAvailable", !isAvailable);
+                  },
+                })}
+              />
+            }
             label="Make it available"
             labelPlacement="start"
+            disabled={invalidQuantity}
           />
         </Stack>
       </Box>
