@@ -44,6 +44,8 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
     },
   });
   const quantity = watch(`availableQuantity_${productId}`);
+  const invalidQuantity =
+    Number(quantity) === 0 || !!errors?.[`availableQuantity_${productId}`];
 
   const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
     const selectedIndex = selected.indexOf(name);
@@ -98,10 +100,10 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
   }, [product]);
 
   React.useEffect(() => {
-    if (!quantity || isNaN(quantity as number) || Number(quantity) === 0) {
+    if (invalidQuantity) {
       setAvailable(false);
     }
-  }, [quantity]);
+  }, [invalidQuantity]);
 
   return (
     <TableRow
@@ -167,11 +169,7 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
             checked={available}
             onChange={() => setAvailable((available) => !available)}
             onClick={(event) => event.stopPropagation()}
-            disabled={
-              !quantity ||
-              quantity == 0 ||
-              !!errors?.[`availableQuantity_${productId}`]
-            }
+            disabled={invalidQuantity}
           />
         ) : isAvailable ? (
           <CheckCircleOutlineOutlinedIcon color="success" />
