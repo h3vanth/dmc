@@ -58,5 +58,5 @@ This application provides an interface where you can manage food menu, create or
 4. Then run the following commands:
    ```sh
        npm install
-       npm start
+       npm run dev
    ```
