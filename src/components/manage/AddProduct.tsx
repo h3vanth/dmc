@@ -69,9 +69,10 @@ const AddProduct = ({
           })
         );
       })();
+    } else if (!clicked) {
+      setOpen(false);
     }
     reset(INITIAL_VALUES, RESET_OPTIONS);
-    setOpen(false);
   };
 
   return (
