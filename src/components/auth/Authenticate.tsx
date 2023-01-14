@@ -21,11 +21,10 @@ const Authenticate: React.FC = () => {
     register,
     reset,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     watch,
   } = useForm<AuthInputs>({
-    // Validation will trigger on the blur and change events.
-    mode: "all",
+    mode: "onBlur",
   });
   const pass = watch("password");
 
@@ -99,7 +98,11 @@ const Authenticate: React.FC = () => {
           <Box
             sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 2 }}
           >
-            <Button type="submit" variant="contained" disabled={!isValid}>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={!isDirty || !isValid}
+            >
               {isRegistration ? "Sign up" : "Log in"}
             </Button>
             <Button
