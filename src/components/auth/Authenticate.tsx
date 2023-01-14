@@ -47,6 +47,10 @@ const Authenticate: React.FC = () => {
     );
   };
 
+  React.useEffect(() => {
+    reset({ email: "", password: "", confirmpassword: "" }, RESET_OPTIONS);
+  }, [isRegistration]);
+
   return (
     <Box sx={{ maxWidth: 600, margin: "auto" }}>
       <Typography variant="h3" color="white" sx={{ mb: 2 }}>
@@ -55,7 +59,7 @@ const Authenticate: React.FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack>
           <TextField
-            label="User name"
+            label="Email"
             {...register("email", email)}
             error={!!errors.email}
             helperText={errors.email?.message}
@@ -101,13 +105,9 @@ const Authenticate: React.FC = () => {
             <Button
               type="button"
               variant="text"
-              onClick={() => {
-                reset(
-                  { email: "", password: "", confirmpassword: "" },
-                  RESET_OPTIONS
-                );
-                setIsRegistration((isRegistration) => !isRegistration);
-              }}
+              onClick={() =>
+                setIsRegistration((isRegistration) => !isRegistration)
+              }
             >
               {isRegistration ? "Log in" : "Sign up"}
             </Button>

@@ -1,12 +1,18 @@
+import { HELPER_TEXT } from "../constants/form";
+
 const email = {
-  required: "Enter valid email id",
+  required: HELPER_TEXT.EMAIL,
+  pattern: {
+    value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+    message: HELPER_TEXT.EMAIL,
+  },
 };
 
 const password = {
-  required: "Enter a valid password",
+  required: HELPER_TEXT.PASSWORD,
   minLength: {
     value: 8,
-    message: "Enter a valid password",
+    message: HELPER_TEXT.PASSWORD,
   },
 };
 

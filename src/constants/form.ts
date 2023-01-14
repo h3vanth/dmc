@@ -20,4 +20,9 @@ const RESET_OPTIONS = {
   keepValues: false,
 };
 
-export { UNREGISTER_OPTIONS, RESET_OPTIONS };
+const HELPER_TEXT = {
+  EMAIL: "Enter a valid email id",
+  PASSWORD: "Enter a valid password",
+};
+
+export { UNREGISTER_OPTIONS, RESET_OPTIONS, HELPER_TEXT };
