@@ -1,10 +1,13 @@
-const products = [
+import { ProductData } from "../types";
+
+const products: ProductData[] = [
   {
     productId: "1",
     productName: "Biryani",
     price: 100,
     isAvailable: true,
     availableQuantity: 100,
+    imageUrl: "vite.svg",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   },
@@ -14,6 +17,8 @@ const products = [
     price: 100,
     isAvailable: true,
     availableQuantity: 100,
+    imageUrl: "vite.svg",
+    description: "",
   },
   {
     productId: "3",
@@ -21,76 +26,8 @@ const products = [
     price: 100,
     isAvailable: false,
     availableQuantity: 100,
-  },
-  {
-    productId: "4",
-    productName: "Biryani3",
-    price: 100,
-    isAvailable: false,
-    availableQuantity: 100,
-  },
-  {
-    productId: "5",
-    productName: "Biryani4",
-    price: 100,
-    isAvailable: false,
-    availableQuantity: 100,
-  },
-  {
-    productId: "6",
-    productName: "Biryani5",
-    price: 100,
-    isAvailable: false,
-    availableQuantity: 100,
-  },
-  {
-    productId: "7",
-    productName: "Biryani6",
-    price: 100,
-    isAvailable: false,
-    availableQuantity: 100,
-  },
-  {
-    productId: "8",
-    productName: "Biryani7",
-    price: 100,
-    isAvailable: false,
-    availableQuantity: 100,
-  },
-  {
-    productId: "9",
-    productName: "Biryani8",
-    price: 100,
-    isAvailable: false,
-    availableQuantity: 100,
-  },
-  {
-    productId: "10",
-    productName: "Biryani9",
-    price: 100,
-    isAvailable: false,
-    availableQuantity: 100,
-  },
-  {
-    productId: "11",
-    productName: "Biryani10",
-    price: 100,
-    isAvailable: false,
-    availableQuantity: 100,
-  },
-  {
-    productId: "12",
-    productName: "Biryani11",
-    price: 100,
-    isAvailable: false,
-    availableQuantity: 100,
-  },
-  {
-    productId: "13",
-    productName: "Biryani12",
-    price: 100,
-    isAvailable: false,
-    availableQuantity: 100,
+    imageUrl: "vite.svg",
+    description: "",
   },
 ];
 
