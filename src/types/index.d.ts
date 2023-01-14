@@ -60,10 +60,9 @@ export interface ProductData {
   productId: string;
   productName: string;
   price: number;
-  imageSource?: string;
-  alt?: string;
+  imageUrl: string;
   isAvailable: boolean;
-  description?: string | null | undefined;
+  description: string;
   availableQuantity: number;
 }
 

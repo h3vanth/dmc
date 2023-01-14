@@ -14,12 +14,12 @@ const ProductDetails: React.FC<{
   setOpenDrawer: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ product, setOpenDrawer }) => {
   const {
-    alt = "product cover",
     isAvailable,
     productName,
     price,
     description,
     availableQuantity,
+    imageUrl,
   } = product ?? {};
   return (
     <Box sx={{ textAlign: "center" }}>
@@ -28,7 +28,11 @@ const ProductDetails: React.FC<{
           <CloseRoundedIcon />
         </IconButton>
       </Grid>
-      <RamenDiningIcon fontSize="large" />
+      {imageUrl ? (
+        <img src={imageUrl} alt="product cover" style={{ width: 300 }} />
+      ) : (
+        <RamenDiningIcon fontSize="large" />
+      )}
       <Typography variant="h3">{productName}</Typography>
       <Grid
         container
@@ -51,7 +55,7 @@ const ProductDetails: React.FC<{
         </Grid>
       </Grid>
       <Typography variant="body2">
-        {description || "No description available at the moment"}
+        {description || "Description is not available."}
       </Typography>
     </Box>
   );

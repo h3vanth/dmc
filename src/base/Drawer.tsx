@@ -21,7 +21,7 @@ const Drawer: React.FC<DrawerProps> = ({ open, onClose, children }) => {
 
   return (
     <StyledDrawer anchor={"right"} open={open} onClose={onClose}>
-      <Box sx={{ minWidth: isMobile ? "unset" : 400 }} role="presentation">
+      <Box sx={{ width: isMobile ? "unset" : 400, px: 2 }} role="presentation">
         {children}
       </Box>
     </StyledDrawer>

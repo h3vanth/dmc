@@ -1,5 +1,5 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -22,9 +22,9 @@ const Product: React.FC<ProductAddlProps> = ({
   productName,
   price,
   isAvailable,
-  alt = "product cover",
   description,
   availableQuantity,
+  imageUrl,
   setOpenDrawer,
   setSelectedProduct,
 }) => {
@@ -47,7 +47,7 @@ const Product: React.FC<ProductAddlProps> = ({
       }}
     >
       {/* Wraps the content in a button. TODO: Find another way */}
-      {/* <CardActionArea
+      <CardActionArea
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -58,81 +58,87 @@ const Product: React.FC<ProductAddlProps> = ({
             productName,
             price,
             isAvailable,
-            alt,
             description,
             availableQuantity,
+            imageUrl,
           });
           setOpenDrawer(true);
         }}
-      > */}
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <CardContent sx={{ flex: "1 0 auto" }}>
-          <Typography component="div" variant="h5">
-            {/* {truncateText(productName)} */}
-            {productName}
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            component="div"
-          >
-            ₹{price}
-          </Typography>
-          <Chip
-            label={
-              isAvailable ? `Available (${availableQuantity})` : "Not available"
-            }
-            color={isAvailable ? "success" : "error"}
-            variant="outlined"
-          />
-          {isAvailable && order[productId] && (
+      >
+        <Grid direction={"column"}>
+          <CardContent sx={{ flex: "1 0 auto" }}>
+            <Typography component="div" variant="h5">
+              {truncateText(productName)}
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              color="text.secondary"
+              component="div"
+            >
+              ₹{price}
+            </Typography>
             <Chip
-              label={order[productId].quantity}
-              variant="filled"
-              sx={{
-                position: "absolute",
-                right: 0,
-                top: 0,
-                backgroundColor: "#1e1e1e",
-                color: "#fff",
-              }}
+              label={
+                isAvailable
+                  ? `Available (${availableQuantity})`
+                  : "Not available"
+              }
+              color={isAvailable ? "success" : "error"}
+              variant="outlined"
             />
+            {isAvailable && order[productId] && (
+              <Chip
+                label={order[productId].quantity}
+                variant="filled"
+                sx={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  backgroundColor: "#1e1e1e",
+                  color: "#fff",
+                }}
+              />
+            )}
+          </CardContent>
+          <Grid
+            sx={{
+              pl: 1,
+              pb: 1,
+            }}
+          >
+            <IconButton
+              aria-label="add"
+              disabled={
+                !isAvailable ||
+                order?.[productId]?.quantity === availableQuantity
+              }
+              onClick={(event) => onAddOrRemoveClick(event, ProductAction.ADD)}
+            >
+              <AddIcon />
+            </IconButton>
+            <IconButton
+              aria-label="remove"
+              disabled={
+                !isAvailable ||
+                !order?.[productId] ||
+                order[productId].quantity === 0
+              }
+              onClick={(event) =>
+                onAddOrRemoveClick(event, ProductAction.REMOVE)
+              }
+            >
+              <RemoveIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
+        <CardMedia>
+          {imageUrl ? (
+            <img src={imageUrl} alt="product cover" width={151} />
+          ) : (
+            <RamenDiningIcon fontSize="large" sx={{ pr: 2 }} />
           )}
-        </CardContent>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            pl: 1,
-            pb: 1,
-          }}
-        >
-          <IconButton
-            aria-label="add"
-            disabled={
-              !isAvailable || order?.[productId]?.quantity === availableQuantity
-            }
-            onClick={(event) => onAddOrRemoveClick(event, ProductAction.ADD)}
-          >
-            <AddIcon />
-          </IconButton>
-          <IconButton
-            aria-label="remove"
-            disabled={
-              !isAvailable ||
-              !order?.[productId] ||
-              order[productId].quantity === 0
-            }
-            onClick={(event) => onAddOrRemoveClick(event, ProductAction.REMOVE)}
-          >
-            <RemoveIcon />
-          </IconButton>
-        </Box>
-      </Box>
-      <CardMedia sx={{ pr: 2, alignSelf: "center" }}>
-        <RamenDiningIcon fontSize="large" />
-      </CardMedia>
-      {/* </CardActionArea> */}
+        </CardMedia>
+      </CardActionArea>
     </Card>
   );
 };
