@@ -65,7 +65,7 @@ const Product: React.FC<ProductAddlProps> = ({
           setOpenDrawer(true);
         }}
       >
-        <Grid direction={"column"}>
+        <Grid container direction="column">
           <CardContent sx={{ flex: "1 0 auto" }}>
             <Typography component="div" variant="h5">
               {truncateText(productName)}
