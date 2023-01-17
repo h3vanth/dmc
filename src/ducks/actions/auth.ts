@@ -87,7 +87,6 @@ const authenticate = (
 const logoutUser = () => {
   return (dispatch: AppDispatch) => {
     dispatch(authActions.destroyStore());
-    localStorage.removeItem("dmc");
   };
 };
 

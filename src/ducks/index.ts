@@ -4,7 +4,8 @@ import thunk, { ThunkDispatch } from "redux-thunk";
 
 import rootReducer, { INITIAL_STATE } from "./reducers";
 
-const data = localStorage.getItem("dmc");
+const data = sessionStorage.getItem("dmc");
+sessionStorage.removeItem("dmc");
 
 const store = createStore(
   rootReducer,
@@ -12,11 +13,13 @@ const store = createStore(
   applyMiddleware(thunk)
 );
 
-if (!import.meta.env.vitest) {
-  store.subscribe(() => {
-    localStorage.setItem("dmc", JSON.stringify(store.getState()));
-  });
-}
+window.onbeforeunload = function () {
+  const state = store.getState();
+  if (state.auth.isAuth) {
+    // TODO: can be encrypted and stored
+    sessionStorage.setItem("dmc", JSON.stringify(state));
+  }
+};
 
 type GetStateType = typeof store.getState;
 type RootState = ReturnType<typeof store.getState>;
