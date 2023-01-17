@@ -25,7 +25,6 @@ class StompClient {
       const isOnline = store.getState().common.isOnline;
       !isOnline && store.dispatch(commonActions.toggleOnlineStatus());
       this.client.subscribe("/topic/products", (message: Stomp.Message) => {
-        (window as any).client = this.client;
         store.dispatch(productActions.setProducts(JSON.parse(message.body)));
       });
     });
