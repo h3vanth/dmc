@@ -1,18 +1,5 @@
 import { orderActionTypes } from "../actions/orders";
-
-type Order = {
-  [productId: string]: {
-    quantity: number;
-  };
-};
-
-export type PlacedOrders = {
-  orderId?: string;
-  productName: string;
-  productId: string;
-  quantity: number;
-  price: number;
-}[];
+import { Order, PlacedOrders } from "../../types";
 
 const initialState: {
   order: Order;

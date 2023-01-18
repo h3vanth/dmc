@@ -21,7 +21,6 @@ import { useAppDispatch, useAppSelector } from "../../ducks";
 import { orderActions, orderActionTypes } from "../../ducks/actions/orders";
 import { commonActions, commonActionTypes } from "../../ducks/actions/common";
 import { account } from "../../mocks/account";
-import StompClient from "../../helpers/StompClient";
 import { ProductData } from "../../types";
 import { ModalContent } from "../../constants/orders";
 import { ALERT_SEVERITY } from "../../constants";

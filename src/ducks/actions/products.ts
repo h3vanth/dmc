@@ -1,8 +1,8 @@
 import { AppDispatch, GetStateType } from "..";
 import { ALERT_SEVERITY, METHOD } from "../../constants";
 import { ERRORS } from "../../constants";
-import StompClient from "../../helpers/StompClient";
-import { AddProductInputs, Obj, ProductData } from "../../types";
+import { SC } from "../../helpers";
+import { Obj, ProductData } from "../../types";
 import { f3tch, joinStringArray } from "../../utils";
 import { selectToken } from "../selectors";
 import { commonActions } from "./common";
@@ -85,15 +85,18 @@ const addProduct = (
 ) => {
   return async (dispatch: AppDispatch, getState: GetStateType) => {
     dispatch(commonActions.toggleLoaderState());
+    const state = getState();
     const { data, okResponse } = await f3tch({
       url: import.meta.env.VITE_PRODUCTS_ENDPOINT,
       method: METHOD.POST,
       body: formData,
-      token: selectToken(getState()),
+      token: selectToken(state),
     });
     dispatch(commonActions.toggleLoaderState());
     if (okResponse) {
-      StompClient.send("/app/message");
+      SC.use({ token: state.auth.token }, (client) => {
+        client.send("/app/message");
+      });
       dispatch(
         commonActions.showSnackbar({
           message: "Product added",
@@ -117,15 +120,18 @@ const addProduct = (
 const updateProduct = (product: Obj, successCb?: SuccessCallback) => {
   return async (dispatch: AppDispatch, getState: GetStateType) => {
     dispatch(commonActions.toggleLoaderState());
+    const state = getState();
     const { data, okResponse } = await f3tch({
       url: import.meta.env.VITE_PRODUCTS_ENDPOINT,
       method: METHOD.PUT,
       body: product,
-      token: selectToken(getState()),
+      token: selectToken(state),
     });
     dispatch(commonActions.toggleLoaderState());
     if (okResponse) {
-      StompClient.send("/app/message");
+      SC.use({ token: state.auth.token }, (client) => {
+        client.send("/app/message");
+      });
       dispatch(
         commonActions.showSnackbar({
           message: "Product updated",
@@ -149,14 +155,17 @@ const updateProduct = (product: Obj, successCb?: SuccessCallback) => {
 const deleteProducts = (productIds: string, successCb?: SuccessCallback) => {
   return async (dispatch: AppDispatch, getState: GetStateType) => {
     dispatch(commonActions.toggleLoaderState());
+    const state = getState();
     const { data, okResponse } = await f3tch({
       url: import.meta.env.VITE_PRODUCTS_ENDPOINT + `/${productIds}`,
       method: METHOD.DELETE,
-      token: selectToken(getState()),
+      token: selectToken(state),
     });
     dispatch(commonActions.toggleLoaderState());
     if (okResponse) {
-      StompClient.send("/app/message");
+      SC.use({ token: state.auth.token }, (client) => {
+        client.send("/app/message");
+      });
       dispatch(
         commonActions.showSnackbar({
           message: "Product(s) deleted",

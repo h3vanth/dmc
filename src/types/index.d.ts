@@ -126,3 +126,26 @@ export interface Response {
   hasContent: boolean;
   headers: Headers | null;
 }
+
+export interface Order {
+  [productId: string]: {
+    quantity: number;
+  };
+}
+
+export interface PlacedOrder {
+  orderId?: string;
+  productName: string;
+  productId: string;
+  quantity: number;
+  price: number;
+}
+
+export type PlacedOrders = PlacedOrder[];
+
+export interface SCUseOptions {
+  token: string;
+  subscribeTo?: string;
+}
+
+export type SCExec = (client: Stomp.Client) => void;

@@ -1,9 +1,8 @@
 import { AppDispatch, GetStateType } from "..";
 import { ALERT_SEVERITY, METHOD } from "../../constants";
-import StompClient from "../../helpers/StompClient";
-import { ProductActionType } from "../../types";
+import { SC } from "../../helpers";
+import { PlacedOrders, ProductActionType } from "../../types";
 import { f3tch } from "../../utils";
-import { PlacedOrders } from "../reducers/orders";
 import { selectToken } from "../selectors";
 import { commonActions } from "./common";
 
@@ -100,7 +99,9 @@ const placeOrder = () => {
     });
 
     if (okResponse) {
-      StompClient.send("/app/message");
+      SC.use({ token: state.auth.token }, (client) => {
+        client.send("/app/message");
+      });
       dispatch({
         type: orderActionTypes.EMPTY_ORDER,
       });
