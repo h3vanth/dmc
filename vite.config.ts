@@ -1,7 +1,6 @@
 /// <reference types="vitest" />
 
 import { defineConfig } from "vite";
-import { configDefaults } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 
@@ -11,16 +10,12 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
+    setupFiles: ["@testing-library/jest-dom/extend-expect"],
     coverage: {
       provider: "c8",
       reporter: ["text", "html"],
-      exclude: [
-        ...configDefaults.exclude,
-        "src/mocks/**",
-        "src/types/**",
-        "src/constants/**",
-        "__tests__/**",
-      ],
+      clean: true,
+      cleanOnRerun: true,
     },
   },
 });
