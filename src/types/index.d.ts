@@ -26,7 +26,7 @@ export interface DialogProps {
   title: string;
   children: React.ReactNode;
   buttonLabel?: string;
-  fullScreen: boolean;
+  fullScreen?: boolean;
   disableButton?: boolean;
 }
 
