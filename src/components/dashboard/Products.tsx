@@ -44,8 +44,10 @@ const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
   const dispatch = useAppDispatch();
   const {
     orders: { order, placedOrders },
+    allowNavigation,
   } = useAppSelector((state) => ({
     orders: state.orders,
+    allowNavigation: state.common.allowNavigation,
   }));
   const shouldShowOrder = React.useMemo(() => {
     for (const key in order) {
@@ -140,7 +142,7 @@ const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
           <Grid item xs={12}>
             <Typography color="white">
               No product available.{" "}
-              {!available && (
+              {!available && allowNavigation && (
                 <>
                   To add one click{" "}
                   <Link
