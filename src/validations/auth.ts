@@ -16,4 +16,16 @@ const password = {
   },
 };
 
-export { email, password };
+const passcode = {
+  required: HELPER_TEXT.PASSCODE,
+  minLength: {
+    value: 6,
+    message: HELPER_TEXT.PASSCODE,
+  },
+  maxLength: {
+    value: 6,
+    message: HELPER_TEXT.PASSCODE,
+  },
+};
+
+export { email, password, passcode };

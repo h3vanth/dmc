@@ -4,9 +4,9 @@ const commonActionTypes = {
   SHOW_SNACKBAR: "SHOW_SNACKBAR",
   HIDE_SNACKBAR: "HIDE_SNACKBAR",
   TOGGLE_LOADER_STATE: "TOGGLE_LOADER_STATE",
-  RESTRICT_ROUTES: "RESTRICT_ROUTES",
   TOGGLE_ONLINE_STATUS: "TOGGLE_ONLINE_STATUS",
   SET_SESSION_ID: "SET_SESSION_ID",
+  TOGGLE_NAV_CONTROL: "TOGGLE_NAV_CONTROL",
 };
 
 const commonActions = {
@@ -20,12 +20,11 @@ const commonActions = {
   toggleLoaderState: () => ({
     type: commonActionTypes.TOGGLE_LOADER_STATE,
   }),
-  restrictRoutes: (...payload: string[]) => ({
-    type: commonActionTypes.RESTRICT_ROUTES,
-    payload,
-  }),
   toggleOnlineStatus: () => ({
     type: commonActionTypes.TOGGLE_ONLINE_STATUS,
+  }),
+  toggleNavControl: () => ({
+    type: commonActionTypes.TOGGLE_NAV_CONTROL,
   }),
 };
 

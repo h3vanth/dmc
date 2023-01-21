@@ -59,6 +59,7 @@ const authenticate = (
           authActions.setAuthToken({
             token,
             email: data?.email,
+            passcode: data?.passcode,
           })
         );
         successCb();
@@ -91,7 +92,11 @@ const logoutUser = () => {
 };
 
 const authActions = {
-  setAuthToken: (payload: { token: string; email: string }) => ({
+  setAuthToken: (payload: {
+    token: string;
+    email: string;
+    passcode: string;
+  }) => ({
     type: authActionTypes.SET_AUTH_TOKEN,
     payload,
   }),

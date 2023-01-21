@@ -4,9 +4,9 @@ import { commonActionTypes } from "../actions/common";
 const initialState = {
   isLoading: false,
   snackbar: { message: "", severity: ALERT_SEVERITY.SUCCESS, open: false },
-  restrictedRoutes: [] as string[],
   isOnline: false,
   sessionId: new Date().toISOString(),
+  allowNavigation: true,
 };
 
 const reducer = (
@@ -20,25 +20,12 @@ const reducer = (
       return { ...state, snackbar: { ...state.snackbar, open: false } };
     case commonActionTypes.TOGGLE_LOADER_STATE:
       return { ...state, isLoading: !state.isLoading };
-    case commonActionTypes.RESTRICT_ROUTES:
-      let restrictedRoutes: string[] = [];
-      if (state.restrictedRoutes) {
-        action.payload.forEach((path: string) => {
-          if (!state.restrictedRoutes.includes(path))
-            restrictedRoutes.push(path);
-        });
-        restrictedRoutes = [...state.restrictedRoutes, ...restrictedRoutes];
-      } else {
-        restrictedRoutes = action.payload;
-      }
-      return {
-        ...state,
-        restrictedRoutes,
-      };
     case commonActionTypes.TOGGLE_ONLINE_STATUS:
       return { ...state, isOnline: !state.isOnline };
     case commonActionTypes.SET_SESSION_ID:
       return { ...state, sessionId: action.payload };
+    case commonActionTypes.TOGGLE_NAV_CONTROL:
+      return { ...state, allowNavigation: !state.allowNavigation };
     default:
       return state;
   }

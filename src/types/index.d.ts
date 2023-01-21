@@ -47,6 +47,7 @@ export interface AuthInputs {
   email: string;
   password: string;
   confirmpassword: string;
+  passcode: string;
 }
 
 export interface TabPanelProps {

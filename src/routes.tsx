@@ -2,10 +2,9 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 
 import Dashboard from "./components/dashboard";
-import Account from "./components/account";
-import { useAppSelector } from "./ducks";
 import Authenticate from "./components/auth/Authenticate";
 import ManageProducts from "./components/manage/ManageProducts";
+import { useAppSelector } from "./ducks";
 
 const InvalidRoute = () => {
   return (
@@ -16,28 +15,29 @@ const InvalidRoute = () => {
 };
 
 const AppRoutes = () => {
-  const { isAuth, restrictedRoutes = [] } = useAppSelector((state) => ({
+  const { isAuth, allowNavigation } = useAppSelector((state) => ({
     isAuth: state.auth.isAuth,
-    restrictedRoutes: state.common.restrictedRoutes,
+    allowNavigation: state.common.allowNavigation,
   }));
 
   return (
     <Routes>
-      {isAuth && (
+      {isAuth ? (
         <>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/manage/products" element={<ManageProducts />} />
-          {!restrictedRoutes.includes("/account") && (
+          {allowNavigation ? (
             <>
-              {/* TODO: Feature will be available in future */}
-              {/* <Route path="/account/" element={<Account />} /> */}
-              {/* <Route path="/manage/devices" element={<Account />} /> */}
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/manage/products" element={<ManageProducts />} />
+              <Route path="*" element={<InvalidRoute />} />
+            </>
+          ) : (
+            <>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="*" element={<Navigate to="/" />} />
             </>
           )}
-          <Route path="*" element={<InvalidRoute />} />
         </>
-      )}
-      {!isAuth && (
+      ) : (
         <>
           <Route path="/login" element={<Authenticate />} />
           <Route path="*" element={<Navigate to="/login" />} />

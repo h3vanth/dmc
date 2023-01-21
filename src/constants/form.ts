@@ -23,6 +23,7 @@ const RESET_OPTIONS = {
 const HELPER_TEXT = {
   EMAIL: "Enter a valid email id",
   PASSWORD: "Enter a valid password",
+  PASSCODE: "Please enter a 6 digit code",
 };
 
 export { UNREGISTER_OPTIONS, RESET_OPTIONS, HELPER_TEXT };

@@ -4,6 +4,7 @@ const initialState = {
   isAuth: false,
   token: "",
   email: "",
+  passcode: "",
 };
 
 const reducer = (
@@ -13,10 +14,8 @@ const reducer = (
   switch (action.type) {
     case authActionTypes.SET_AUTH_TOKEN:
       return {
-        ...state,
         isAuth: true,
-        token: action.payload?.token,
-        email: action.payload?.email,
+        ...action.payload,
       };
     case authActionTypes.LOGOUT:
       return { ...initialState };

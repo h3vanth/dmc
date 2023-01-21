@@ -8,7 +8,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 
 import TextField from "../../base/TextField";
 import { authActions } from "../../ducks/actions/auth";
-import { password, email } from "../../validations/auth";
+import { password, email, passcode } from "../../validations/auth";
 import { RESET_OPTIONS } from "../../constants/form";
 import { useAppDispatch } from "../../ducks";
 import { AuthInputs } from "../../types";
@@ -38,6 +38,7 @@ const Authenticate: React.FC = () => {
         {
           email: data.email,
           password: data.password,
+          ...(isRegistration && { passcode: data.passcode }),
         },
         () => {
           navigate("/");
@@ -47,7 +48,10 @@ const Authenticate: React.FC = () => {
   };
 
   React.useEffect(() => {
-    reset({ email: "", password: "", confirmpassword: "" }, RESET_OPTIONS);
+    reset(
+      { email: "", password: "", confirmpassword: "", passcode: "" },
+      RESET_OPTIONS
+    );
   }, [isRegistration]);
 
   return (
@@ -77,23 +81,39 @@ const Authenticate: React.FC = () => {
             }}
           />
           {isRegistration && (
-            <TextField
-              label="Confirm password"
-              type="password"
-              {...register("confirmpassword", {
-                required: password.required,
-                validate: (value) => {
-                  if (value && pass && value !== pass) {
-                    return "Must be same as the password entered above";
-                  }
-                },
-              })}
-              error={!!errors.confirmpassword}
-              helperText={errors.confirmpassword?.message}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
+            <>
+              <TextField
+                label="Confirm password"
+                type="password"
+                {...register("confirmpassword", {
+                  required: password.required,
+                  validate: (value) => {
+                    if (value && pass && value !== pass) {
+                      return "Must be same as the password entered above";
+                    }
+                  },
+                })}
+                error={!!errors.confirmpassword}
+                helperText={errors.confirmpassword?.message}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <TextField
+                label="Passcode"
+                type="passcode"
+                {...register("passcode", passcode)}
+                error={!!errors.passcode}
+                helperText={
+                  errors.passcode
+                    ? errors.passcode.message
+                    : "It will be used for switching between customer and account profiles"
+                }
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </>
           )}
           <Box
             sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 2 }}
