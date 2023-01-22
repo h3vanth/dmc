@@ -5,7 +5,6 @@ import { SCExec, SCUseOptions } from "../types";
 class SC {
   static #client: Stomp.Client;
   static #initialized: boolean;
-  static #connected: boolean;
 
   static #initialize({ token }: SCUseOptions, execute: SCExec) {
     SC.#initialized = true;
@@ -20,7 +19,6 @@ class SC {
 
   static #connect(execute: SCExec) {
     SC.#client.connect({}, (frame) => {
-      SC.#connected = true;
       execute(SC.#client);
     });
   }
@@ -28,9 +26,9 @@ class SC {
   static use({ token }: SCUseOptions, execute: SCExec) {
     if (!SC.#initialized) {
       SC.#initialize({ token }, execute);
-    } else if (!SC.#connected) {
+    } else if (!SC.#client.connected) {
       SC.#connect(execute);
-    } else if (SC.#initialized && SC.#connected) {
+    } else if (SC.#initialized && SC.#client.connected) {
       execute(SC.#client);
     }
   }
