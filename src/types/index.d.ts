@@ -1,6 +1,7 @@
 import * as React from "react";
 import { SxProps } from "@mui/material";
 import { Theme } from "@mui/system/createTheme";
+import Stomp from "stompjs";
 
 import { ProductAction } from "../constants/products";
 import { ALERT_SEVERITY, METHOD } from "../constants";
@@ -144,9 +145,14 @@ export interface PlacedOrder {
 
 export type PlacedOrders = PlacedOrder[];
 
+export interface SCSubscription {
+  destination: string;
+  cb: (message: Stomp.Message) => void;
+}
 export interface SCUseOptions {
   token: string;
-  subscribeTo?: string;
+  subscription?: SCSubscription;
+  afterConn?: () => void;
 }
 
 export type SCExec = (client: Stomp.Client) => void;

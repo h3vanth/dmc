@@ -14,17 +14,16 @@ const useSocket = () => {
 
   React.useEffect(() => {
     if (token) {
-      SC.use(
-        {
-          token,
+      SC.use({
+        token,
+        subscription: {
+          destination: "/topic/products",
+          cb: (message) =>
+            dispatch(productActions.setProducts(JSON.parse(message.body))),
         },
-        (client) => {
-          !isOnline && dispatch(commonActions.toggleOnlineStatus());
-          client.subscribe("/topic/products", (message: any) => {
-            dispatch(productActions.setProducts(JSON.parse(message.body)));
-          });
-        }
-      );
+        afterConn: () =>
+          !isOnline && dispatch(commonActions.toggleOnlineStatus()),
+      });
     }
   }, [token, isOnline, dispatch]);
 };
