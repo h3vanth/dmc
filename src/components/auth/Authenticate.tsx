@@ -1,10 +1,10 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useUpdateEffect } from "usehooks-ts";
 
 import TextField from "../../base/TextField";
 import { authActions } from "../../ducks/actions/auth";
@@ -15,7 +15,6 @@ import { AuthInputs } from "../../types";
 
 const Authenticate: React.FC = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const [isRegistration, setIsRegistration] = React.useState(false);
   const {
     register,
@@ -34,20 +33,17 @@ const Authenticate: React.FC = () => {
       action = authActions.register;
     }
     dispatch(
-      action(
-        {
-          email: data.email,
-          password: data.password,
-          ...(isRegistration && { passcode: data.passcode }),
-        },
-        () => {
-          navigate("/");
-        }
-      )
+      action({
+        email: data.email,
+        password: data.password,
+        ...(isRegistration && { passcode: data.passcode }),
+      })
     );
   };
 
-  React.useEffect(() => {
+  // Doesn't run the first time
+  // NOTE: https://usehooks-ts.com/react-hook/use-is-first-render
+  useUpdateEffect(() => {
     reset(
       { email: "", password: "", confirmpassword: "", passcode: "" },
       RESET_OPTIONS

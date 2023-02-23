@@ -11,10 +11,7 @@ const authActionTypes = {
 };
 
 const register =
-  (
-    payload: { email: string; password: string },
-    successCb: () => void
-  ): ThunkAction =>
+  (payload: { email: string; password: string }): ThunkAction =>
   async (dispatch) => {
     dispatch(commonActions.toggleLoaderState());
     const { okResponse, data } = await f3tch({
@@ -25,7 +22,7 @@ const register =
     dispatch(commonActions.toggleLoaderState());
 
     if (okResponse) {
-      dispatch(authenticate(payload, successCb));
+      dispatch(authenticate(payload));
     } else {
       dispatch(
         commonActions.showSnackbar({
@@ -39,10 +36,7 @@ const register =
   };
 
 const authenticate =
-  (
-    { email, password }: { email: string; password: string },
-    successCb: () => void
-  ): ThunkAction =>
+  ({ email, password }: { email: string; password: string }): ThunkAction =>
   async (dispatch) => {
     dispatch(commonActions.toggleLoaderState());
     const { headers, okResponse, data } = await f3tch({
@@ -63,7 +57,6 @@ const authenticate =
             passcode: data?.passcode,
           })
         );
-        successCb();
         dispatch(productActions.fetchProducts());
       } else {
         dispatch(

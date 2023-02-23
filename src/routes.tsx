@@ -27,6 +27,7 @@ const AppRoutes = () => {
           {allowNavigation ? (
             <>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/login" element={<Navigate to="/" />} />
               <Route path="/manage/products" element={<ManageProducts />} />
               <Route path="*" element={<InvalidRoute />} />
             </>
