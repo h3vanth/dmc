@@ -1,4 +1,4 @@
-import { AppDispatch, GetStateType } from "..";
+import { ThunkAction } from "..";
 import { ALERT_SEVERITY, METHOD } from "../../constants";
 import { ERRORS } from "../../constants";
 import { SC } from "../../helpers";
@@ -14,35 +14,34 @@ const productActionTypes = {
   SET_PRODUCTS: "SET_PRODUCTS",
 };
 
-const fetchProducts = () => {
-  return async (dispatch: AppDispatch, getState: GetStateType) => {
-    dispatch(commonActions.toggleLoaderState());
-    const { data, okResponse } = await f3tch({
-      url: import.meta.env.VITE_PRODUCTS_ENDPOINT,
-      method: METHOD.GET,
-      token: selectToken(getState()),
+const fetchProducts = (): ThunkAction => async (dispatch, getState) => {
+  dispatch(commonActions.toggleLoaderState());
+  const { data, okResponse } = await f3tch({
+    url: import.meta.env.VITE_PRODUCTS_ENDPOINT,
+    method: METHOD.GET,
+    token: selectToken(getState()),
+  });
+  dispatch(commonActions.toggleLoaderState());
+  if (okResponse) {
+    dispatch({
+      type: productActionTypes.SET_PRODUCTS,
+      payload: data,
     });
-    dispatch(commonActions.toggleLoaderState());
-    if (okResponse) {
-      dispatch({
-        type: productActionTypes.SET_PRODUCTS,
-        payload: data,
-      });
-    } else {
-      dispatch(
-        commonActions.showSnackbar({
-          message: data?.errorMessages
-            ? joinStringArray(data.errorMessages)
-            : ERRORS.COMMON,
-          severity: ALERT_SEVERITY.ERROR,
-        })
-      );
-    }
-  };
+  } else {
+    dispatch(
+      commonActions.showSnackbar({
+        message: data?.errorMessages
+          ? joinStringArray(data.errorMessages)
+          : ERRORS.COMMON,
+        severity: ALERT_SEVERITY.ERROR,
+      })
+    );
+  }
 };
 
-const setProducts = (products: ProductData[]) => {
-  return (dispatch: AppDispatch, getState: GetStateType) => {
+const setProducts =
+  (products: ProductData[]): ThunkAction =>
+  (dispatch, getState) => {
     dispatch({
       type: productActionTypes.SET_PRODUCTS,
       payload: products,
@@ -77,13 +76,10 @@ const setProducts = (products: ProductData[]) => {
         })
       );
   };
-};
 
-const addProduct = (
-  formData: FormData,
-  successCb?: undefined | (() => void)
-) => {
-  return async (dispatch: AppDispatch, getState: GetStateType) => {
+const addProduct =
+  (formData: FormData, successCb?: undefined | (() => void)): ThunkAction =>
+  async (dispatch, getState) => {
     dispatch(commonActions.toggleLoaderState());
     const state = getState();
     const { data, okResponse } = await f3tch({
@@ -115,10 +111,10 @@ const addProduct = (
       );
     }
   };
-};
 
-const updateProduct = (product: Obj, successCb?: SuccessCallback) => {
-  return async (dispatch: AppDispatch, getState: GetStateType) => {
+const updateProduct =
+  (product: Obj, successCb?: SuccessCallback): ThunkAction =>
+  async (dispatch, getState) => {
     dispatch(commonActions.toggleLoaderState());
     const state = getState();
     const { data, okResponse } = await f3tch({
@@ -150,10 +146,10 @@ const updateProduct = (product: Obj, successCb?: SuccessCallback) => {
       );
     }
   };
-};
 
-const deleteProducts = (productIds: string, successCb?: SuccessCallback) => {
-  return async (dispatch: AppDispatch, getState: GetStateType) => {
+const deleteProducts =
+  (productIds: string, successCb?: SuccessCallback): ThunkAction =>
+  async (dispatch, getState) => {
     dispatch(commonActions.toggleLoaderState());
     const state = getState();
     const { data, okResponse } = await f3tch({
@@ -184,7 +180,6 @@ const deleteProducts = (productIds: string, successCb?: SuccessCallback) => {
       );
     }
   };
-};
 
 const productActions = {
   fetchProducts,

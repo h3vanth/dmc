@@ -1,4 +1,4 @@
-import { AppDispatch, GetStateType } from "..";
+import { ThunkAction } from "..";
 import { ALERT_SEVERITY, METHOD } from "../../constants";
 import { SC } from "../../helpers";
 import { PlacedOrders, ProductActionType } from "../../types";
@@ -13,11 +13,9 @@ const orderActionTypes = {
   EMPTY_PLACED_ORDERS: "EMPTY_PLACED_ORDERS",
 };
 
-const updateOrder = (payload: {
-  action: ProductActionType;
-  productId: string;
-}) => {
-  return (dispatch: AppDispatch, getState: GetStateType) => {
+const updateOrder =
+  (payload: { action: ProductActionType; productId: string }): ThunkAction =>
+  (dispatch, getState) => {
     dispatch(commonActions.hideSnackbar());
     const order = JSON.parse(JSON.stringify(getState().orders.order));
     const { productId, action } = payload;
@@ -58,73 +56,70 @@ const updateOrder = (payload: {
       })
     );
   };
-};
 
-const placeOrder = () => {
-  return async (dispatch: AppDispatch, getState: GetStateType) => {
-    dispatch(commonActions.toggleLoaderState());
-    const state = getState();
-    const products = state.products;
-    const sessionId = state.common.sessionId;
-    const { order, placedOrders } = state.orders;
+const placeOrder = (): ThunkAction => async (dispatch, getState) => {
+  dispatch(commonActions.toggleLoaderState());
+  const state = getState();
+  const products = state.products;
+  const sessionId = state.common.sessionId;
+  const { order, placedOrders } = state.orders;
 
-    const orderedProducts = [];
-    for (const key in order) {
-      const placedOrder = (placedOrders as PlacedOrders)?.find(
-        ({ productId }) => productId === key
-      );
-      const product = products.find(({ productId }) => productId === key);
-      const prodObj: {
-        [key: string]: string | number | undefined;
-      } = {};
-      if (placedOrder) {
-        prodObj.orderId = placedOrder.orderId;
-        prodObj.quantity = placedOrder.quantity + order[key].quantity;
-      } else {
-        prodObj.quantity = order[key].quantity;
-      }
-      prodObj.productId = key;
-      prodObj.productName = product?.productName;
-      prodObj.price = product?.price;
-      prodObj.sessionId = sessionId;
-
-      orderedProducts.push(prodObj);
-    }
-
-    const { okResponse, data } = await f3tch({
-      url: import.meta.env.VITE_PLACE_ORDER_ENDPOINT,
-      method: METHOD.POST,
-      body: orderedProducts,
-      token: selectToken(state),
-    });
-
-    if (okResponse) {
-      SC.use({ token: state.auth.token }, (client) => {
-        client.send("/app/message");
-      });
-      dispatch({
-        type: orderActionTypes.EMPTY_ORDER,
-      });
-      dispatch(
-        commonActions.showSnackbar({
-          message: "Order placed",
-          severity: ALERT_SEVERITY.SUCCESS,
-        })
-      );
-      dispatch({
-        type: orderActionTypes.PLACE_ORDER,
-        payload: data,
-      });
+  const orderedProducts = [];
+  for (const key in order) {
+    const placedOrder = (placedOrders as PlacedOrders)?.find(
+      ({ productId }) => productId === key
+    );
+    const product = products.find(({ productId }) => productId === key);
+    const prodObj: {
+      [key: string]: string | number | undefined;
+    } = {};
+    if (placedOrder) {
+      prodObj.orderId = placedOrder.orderId;
+      prodObj.quantity = placedOrder.quantity + order[key].quantity;
     } else {
-      dispatch(
-        commonActions.showSnackbar({
-          message: "Oops! Couldn't place order. Please try again.",
-          severity: ALERT_SEVERITY.ERROR,
-        })
-      );
+      prodObj.quantity = order[key].quantity;
     }
-    dispatch(commonActions.toggleLoaderState());
-  };
+    prodObj.productId = key;
+    prodObj.productName = product?.productName;
+    prodObj.price = product?.price;
+    prodObj.sessionId = sessionId;
+
+    orderedProducts.push(prodObj);
+  }
+
+  const { okResponse, data } = await f3tch({
+    url: import.meta.env.VITE_PLACE_ORDER_ENDPOINT,
+    method: METHOD.POST,
+    body: orderedProducts,
+    token: selectToken(state),
+  });
+
+  if (okResponse) {
+    SC.use({ token: state.auth.token }, (client) => {
+      client.send("/app/message");
+    });
+    dispatch({
+      type: orderActionTypes.EMPTY_ORDER,
+    });
+    dispatch(
+      commonActions.showSnackbar({
+        message: "Order placed",
+        severity: ALERT_SEVERITY.SUCCESS,
+      })
+    );
+    dispatch({
+      type: orderActionTypes.PLACE_ORDER,
+      payload: data,
+    });
+  } else {
+    dispatch(
+      commonActions.showSnackbar({
+        message: "Oops! Couldn't place order. Please try again.",
+        severity: ALERT_SEVERITY.ERROR,
+      })
+    );
+  }
+  dispatch(commonActions.toggleLoaderState());
 };
 
 const orderActions = {

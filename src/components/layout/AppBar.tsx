@@ -112,7 +112,7 @@ const AppBar: React.FC = () => {
                       onClick={() => {
                         handleCloseUserMenu();
                         if (path === "/login") {
-                          dispatch(authActions.logoutUser());
+                          dispatch(authActions.destroyStore());
                         }
                         navigate(path);
                       }}

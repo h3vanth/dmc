@@ -1,4 +1,4 @@
-import { AppDispatch } from "..";
+import { ThunkAction } from "..";
 import { METHOD, ERRORS, ALERT_SEVERITY } from "../../constants";
 import { f3tch, joinStringArray } from "../../utils";
 import { commonActions } from "./common";
@@ -10,11 +10,12 @@ const authActionTypes = {
   DESTROY_STORE: "DESTROY_STORE",
 };
 
-const register = (
-  payload: { email: string; password: string },
-  successCb: () => void
-) => {
-  return async (dispatch: AppDispatch) => {
+const register =
+  (
+    payload: { email: string; password: string },
+    successCb: () => void
+  ): ThunkAction =>
+  async (dispatch) => {
     dispatch(commonActions.toggleLoaderState());
     const { okResponse, data } = await f3tch({
       url: import.meta.env.VITE_REGISTER_ENDPOINT,
@@ -36,13 +37,13 @@ const register = (
       );
     }
   };
-};
 
-const authenticate = (
-  { email, password }: { email: string; password: string },
-  successCb: () => void
-) => {
-  return async (dispatch: AppDispatch) => {
+const authenticate =
+  (
+    { email, password }: { email: string; password: string },
+    successCb: () => void
+  ): ThunkAction =>
+  async (dispatch) => {
     dispatch(commonActions.toggleLoaderState());
     const { headers, okResponse, data } = await f3tch({
       url: import.meta.env.VITE_AUTH_ENDPOINT,
@@ -83,13 +84,6 @@ const authenticate = (
       );
     }
   };
-};
-
-const logoutUser = () => {
-  return (dispatch: AppDispatch) => {
-    dispatch(authActions.destroyStore());
-  };
-};
 
 const authActions = {
   setAuthToken: (payload: {
@@ -105,7 +99,6 @@ const authActions = {
   }),
   register,
   authenticate,
-  logoutUser,
 };
 
 export { authActionTypes, authActions };

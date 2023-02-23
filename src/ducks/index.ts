@@ -1,5 +1,5 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { createStore, applyMiddleware, AnyAction } from "redux";
+import { createStore, applyMiddleware, ActionCreator, Action } from "redux";
 import thunk, { ThunkDispatch } from "redux-thunk";
 
 import rootReducer, { INITIAL_STATE } from "./reducers";
@@ -21,11 +21,14 @@ window.onbeforeunload = function () {
   }
 };
 
-type GetStateType = typeof store.getState;
 type RootState = ReturnType<typeof store.getState>;
 type AppAction = ReturnType<typeof store.dispatch>;
-
-type AppDispatch = ThunkDispatch<RootState, any, AppAction>;
+type AppDispatch = ThunkDispatch<RootState, unknown, AppAction>;
+type ThunkAction = (
+  dispatch: ThunkDispatch<RootState, unknown, AppAction>,
+  getState: () => RootState,
+  extraArgument: unknown
+) => void;
 
 // Typed useSelector, useDispatch
 const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
@@ -35,6 +38,6 @@ export {
   useAppSelector,
   useAppDispatch,
   store as default,
-  type GetStateType,
   type AppDispatch,
+  type ThunkAction,
 };
