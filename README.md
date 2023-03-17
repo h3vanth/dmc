@@ -31,21 +31,8 @@ This application provides an interface where you can manage food menu, create or
 1. Download mongodb server or you can make use of cloud server https://www.mongodb.com/cloud/atlas/register
 2. Clone dmc-service repository
 3. Switch to **_development_** branch
-4. Create **application-dev.properties** file inside src/main/resources folder (next to application.properties).
-5. Define few properties there
-   ```sh
-       # It would look something like this
-       spring.data.mongodb.uri=mongodb+srv://[YOUR_USERNAME]:[YOUR_PASSWORD]@[DOMAIN]
-       spring.data.mongodb.database=dmc-dev
-       # client
-       cors.allowed-origins=http://localhost:5173
-   ```
-6. Set a system variable with key as _JWT_SECRET_. The value can be a random string (Will be used for creating and verifying JWT tokens)
-7. Dependencies are managed by a tool called **maven**. You don't need to install it. You can make use of the maven wrapper that is already present.
-8. Run:
-   ```sh
-       mvnw clean spring-boot:run
-   ```
+4. Enter mongodb uri (DB_URI) in startDevServer.bat
+5. Double click the file or type .\startDevServer.bat in cmd and press Enter.
 
 ### dmc-client
 
