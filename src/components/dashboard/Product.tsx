@@ -12,10 +12,11 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import RamenDiningIcon from "@mui/icons-material/RamenDining";
 
 import { useAppDispatch, useAppSelector } from "../../ducks";
-import { truncateText } from "../../utils";
+import { formatPrice, truncateText } from "../../utils";
 import { orderActions } from "../../ducks/actions/orders";
-import { ProductActionType, ProductAddlProps } from "../../types";
 import { ProductAction } from "../../constants/products";
+
+import { ProductActionType, ProductAddlProps } from "../../types";
 
 const Product: React.FC<ProductAddlProps> = ({
   productId,
@@ -75,7 +76,7 @@ const Product: React.FC<ProductAddlProps> = ({
               color="text.secondary"
               component="div"
             >
-              ₹{price}
+              {formatPrice(price)}
             </Typography>
             <Chip
               label={

@@ -1,11 +1,24 @@
 import { FetchArgs, Response } from "../types";
 
+const priceFormatter = new Intl.NumberFormat(undefined, {
+  style: "currency",
+  currency: "INR",
+  minimumFractionDigits: 2,
+});
+
 const getInitial = (username: string = "") => {
   return username.charAt(0).toUpperCase();
 };
 
 const truncateText = (text: string = "", length: number = 12) => {
   return text.length > length ? `${text.slice(0, length)}...` : text;
+};
+
+const formatPrice = (price: number | string) => {
+  if (typeof price === "string") {
+    price = Number(price);
+  }
+  return priceFormatter.format(price);
 };
 
 const f3tch = async ({ url, method, body, headers, token }: FetchArgs) => {
@@ -48,4 +61,4 @@ const joinStringArray = (stringArray: string[], separator: string = ". ") => {
   return stringArray.join(separator);
 };
 
-export { getInitial, truncateText, f3tch, joinStringArray };
+export { getInitial, truncateText, f3tch, joinStringArray, formatPrice };

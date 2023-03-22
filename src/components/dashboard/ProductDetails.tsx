@@ -7,6 +7,8 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import IconButton from "@mui/material/IconButton";
 import RamenDiningIcon from "@mui/icons-material/RamenDining";
 
+import { formatPrice } from "../../utils";
+
 import { ProductData } from "../../types";
 
 const ProductDetails: React.FC<{
@@ -51,7 +53,11 @@ const ProductDetails: React.FC<{
           />
         </Grid>
         <Grid item>
-          <Chip label={`Price: ₹${price}`} color="info" variant="outlined" />
+          <Chip
+            label={`Price: ${formatPrice(price as number)}`}
+            color="info"
+            variant="outlined"
+          />
         </Grid>
       </Grid>
       <Typography variant="body2">
