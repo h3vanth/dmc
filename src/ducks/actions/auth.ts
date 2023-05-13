@@ -1,6 +1,7 @@
 import { ThunkAction } from "..";
 import { METHOD, ERRORS, ALERT_SEVERITY } from "../../constants";
 import { f3tch, joinStringArray } from "../../utils";
+import { categoriesActions } from "./categories";
 import { commonActions } from "./common";
 import { productActions } from "./products";
 
@@ -59,6 +60,7 @@ const authenticate =
           })
         );
         dispatch(productActions.fetchProducts());
+        dispatch(categoriesActions.getCategories());
       } else {
         dispatch(
           commonActions.showSnackbar({

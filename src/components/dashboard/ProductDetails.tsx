@@ -6,23 +6,33 @@ import Grid from "@mui/material/Grid";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import IconButton from "@mui/material/IconButton";
 import RamenDiningIcon from "@mui/icons-material/RamenDining";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { formatPrice } from "../../utils";
 
 import { ProductData } from "../../types";
+import { useAppDispatch, useAppSelector } from "../../ducks";
+import { categoriesActions } from "../../ducks/actions/categories";
 
 const ProductDetails: React.FC<{
   product: ProductData | null;
   setOpenDrawer: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ product, setOpenDrawer }) => {
+  const dispatch = useAppDispatch();
   const {
+    productId,
     isAvailable,
     productName,
     price,
     description,
     availableQuantity,
     imageUrl,
+    categories,
   } = product ?? {};
+  const allowNavigation = useAppSelector(
+    (state) => state.common.allowNavigation
+  );
+
   return (
     <Box sx={{ textAlign: "center" }}>
       <Grid container item justifyContent="right" sx={{ mt: 1 }}>
@@ -60,6 +70,38 @@ const ProductDetails: React.FC<{
           />
         </Grid>
       </Grid>
+      {categories?.length !== 0 && (
+        <Grid container spacing={1} justifyContent="center" sx={{ py: 1 }}>
+          {categories?.map((category) => (
+            <Grid item key={category}>
+              <Chip
+                label={
+                  <Grid container alignItems="center">
+                    <Grid item>{category}</Grid>
+                    {allowNavigation && (
+                      <Grid item>
+                        <CloseIcon
+                          fontSize="small"
+                          sx={{ cursor: "pointer" }}
+                          onClick={() =>
+                            dispatch(
+                              categoriesActions.removeCategory(
+                                productId!,
+                                category
+                              )
+                            )
+                          }
+                        />
+                      </Grid>
+                    )}
+                  </Grid>
+                }
+                variant="outlined"
+              />
+            </Grid>
+          ))}
+        </Grid>
+      )}
       <Typography variant="body2">
         {description || "Description is not available."}
       </Typography>

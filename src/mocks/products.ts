@@ -10,6 +10,7 @@ const products: ProductData[] = [
     imageUrl: "vite.svg",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    categories: [],
   },
   {
     productId: "2",
@@ -19,6 +20,7 @@ const products: ProductData[] = [
     availableQuantity: 100,
     imageUrl: "vite.svg",
     description: "",
+    categories: [],
   },
   {
     productId: "3",
@@ -28,6 +30,7 @@ const products: ProductData[] = [
     availableQuantity: 100,
     imageUrl: "vite.svg",
     description: "",
+    categories: [],
   },
 ];
 

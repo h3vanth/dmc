@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../ducks";
 import { commonActions } from "../ducks/actions/common";
 import { productActions } from "../ducks/actions/products";
 import { SC } from "../helpers";
+import { categoriesActionTypes } from "../ducks/actions/categories";
 
 const useSocket = () => {
   const isOnline = useAppSelector((state) => state.common.isOnline);
@@ -15,11 +16,21 @@ const useSocket = () => {
     if (token) {
       SC.use({
         token,
-        subscription: {
-          destination: `/topic/${userId}/products`,
-          cb: (message) =>
-            dispatch(productActions.setProducts(JSON.parse(message.body))),
-        },
+        subscriptions: [
+          {
+            destination: `/topic/${userId}/products`,
+            cb: (message) =>
+              dispatch(productActions.setProducts(JSON.parse(message.body))),
+          },
+          {
+            destination: `/topic/${userId}/categories`,
+            cb: (message) =>
+              dispatch({
+                type: categoriesActionTypes.SET_CATEGORIES,
+                payload: JSON.parse(message.body),
+              }),
+          },
+        ],
         afterConn: () =>
           !isOnline && dispatch(commonActions.toggleOnlineStatus()),
       });

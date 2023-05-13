@@ -32,20 +32,22 @@ class SC {
   }
 
   static use(
-    { token, subscription, afterConn }: SCUseOptions,
+    { token, subscriptions, afterConn }: SCUseOptions,
     execute: SCExec = noop
   ) {
-    if (afterConn != undefined) {
+    if (afterConn != null) {
       SC.#afterConn = afterConn;
     }
-    if (subscription != undefined) {
-      if (
-        !SC.#subscriptions.some(
-          (s) => s.destination === subscription.destination
-        )
-      ) {
-        SC.#subscriptions.push(subscription);
-      }
+    if (subscriptions != null) {
+      subscriptions.forEach((subscription) => {
+        if (
+          !SC.#subscriptions.some(
+            (s) => s.destination === subscription.destination
+          )
+        ) {
+          SC.#subscriptions.push(subscription);
+        }
+      });
     }
     if (!SC.#initialized) {
       SC.#initialize({ token }, execute);

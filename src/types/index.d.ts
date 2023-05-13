@@ -66,6 +66,7 @@ export interface ProductData {
   isAvailable: boolean;
   description: string;
   availableQuantity: number;
+  categories: string[];
 }
 
 export interface ProductAddlProps extends ProductData {
@@ -109,7 +110,7 @@ export interface AddProductInputs {
 }
 
 export type Obj = {
-  [key: string]: string | number | boolean | null;
+  [key: string]: any;
 };
 
 export interface FetchArgs {
@@ -151,7 +152,7 @@ export interface SCSubscription {
 }
 export interface SCUseOptions {
   token: string;
-  subscription?: SCSubscription;
+  subscriptions?: SCSubscription[];
   afterConn?: () => void;
 }
 

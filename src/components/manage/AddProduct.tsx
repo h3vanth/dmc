@@ -3,14 +3,21 @@ import Box from "@mui/material/Box";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 import Container from "@mui/material/Container";
+import AddIcon from "@mui/icons-material/Add";
 import { useForm } from "react-hook-form";
 
 import Dialog from "../../base/Dialog";
 import TextField from "../../base/TextField";
-import { useAppDispatch } from "../../ducks";
+import { useAppDispatch, useAppSelector } from "../../ducks";
 import { productActions } from "../../ducks/actions/products";
+import { categoriesActions } from "../../ducks/actions/categories";
 import { RESET_OPTIONS } from "../../constants/form";
+
 // TODO: add the types file in tsconfig
 import { AddProductInputs } from "../../types";
 
@@ -42,6 +49,11 @@ const AddProduct = ({
     defaultValues: INITIAL_VALUES,
   });
   const dispatch = useAppDispatch();
+  const categories = useAppSelector((state) => state.categories);
+  const [productCategories, setProductCategories] = React.useState<string[]>(
+    []
+  );
+  const categoryRef = React.useRef<HTMLInputElement | null>(null);
   const [isAvailable, availableQuantity, files] = watch([
     "isAvailable",
     "availableQuantity",
@@ -71,7 +83,9 @@ const AddProduct = ({
         formData.append("price", data.price.toString());
         formData.append("availableQuantity", data.availableQuantity.toString());
         formData.append("description", data.description ?? "");
-        formData.append("isAvailable", data.isAvailable ? "true" : "false");
+        formData.append("isAvailable", data.isAvailable.toString());
+        formData.append("categories", productCategories.join(","));
+
         if (data.files?.[0]) formData.append("image", data.files[0]);
 
         // TODO: check if passing success cb is ok
@@ -86,6 +100,13 @@ const AddProduct = ({
       setOpen(false);
     }
   };
+
+  function addCategory() {
+    if (categoryRef.current?.value) {
+      dispatch(categoriesActions.addCategory(categoryRef.current.value));
+      categoryRef.current.value = "";
+    }
+  }
 
   return (
     <Dialog
@@ -158,6 +179,53 @@ const AddProduct = ({
             labelPlacement="start"
             disabled={invalidQuantity}
           />
+          <FormControl>
+            <InputLabel id="categories" variant="standard">
+              Categories
+            </InputLabel>
+            <Select
+              multiple
+              labelId="categories"
+              label="Categories"
+              variant="standard"
+              displayEmpty
+              // use react-hook-form
+              value={productCategories}
+              onChange={(event) => {
+                const {
+                  target: { value },
+                } = event;
+                setProductCategories(
+                  typeof value === "string" ? value.split(",") : value
+                );
+              }}
+            >
+              <Box sx={{ padding: "6px 16px" }}>
+                <TextField
+                  placeholder="Add category"
+                  InputProps={{
+                    endAdornment: (
+                      <AddIcon
+                        sx={{ cursor: "pointer" }}
+                        onClick={addCategory}
+                      />
+                    ),
+                  }}
+                  sx={{
+                    width: "100%",
+                  }}
+                  inputProps={{
+                    ref: categoryRef,
+                  }}
+                />
+              </Box>
+              {categories.map((category) => (
+                <MenuItem key={category} value={category}>
+                  {category}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Stack>
       </Box>
     </Dialog>

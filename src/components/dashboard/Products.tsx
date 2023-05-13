@@ -12,6 +12,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import { useNavigate } from "react-router-dom";
+import { useUpdateEffect } from "usehooks-ts";
 
 import Dialog from "../../base/Dialog";
 import TextField from "../../base/TextField";
@@ -67,6 +68,20 @@ const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
     }
     return buttonLabel;
   };
+
+  useUpdateEffect(() => {
+    const prod = products.find(
+      (product) => product.productId === selectedProduct?.productId
+    );
+    if (
+      openDrawer === true &&
+      selectedProduct != null &&
+      prod != null &&
+      selectedProduct.categories.length !== prod.categories.length
+    ) {
+      setSelectedProduct(prod);
+    }
+  }, [openDrawer, selectedProduct, products]);
 
   return (
     <>
@@ -180,6 +195,7 @@ const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
                   })
                 );
               }
+              // TODO: use action creators
               dispatch({
                 type: orderActionTypes.EMPTY_ORDER,
               });

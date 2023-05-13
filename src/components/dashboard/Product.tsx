@@ -28,6 +28,7 @@ const Product: React.FC<ProductAddlProps> = ({
   imageUrl,
   setOpenDrawer,
   setSelectedProduct,
+  categories,
 }) => {
   const dispatch = useAppDispatch();
   const order = useAppSelector((state) => state.orders.order);
@@ -62,6 +63,7 @@ const Product: React.FC<ProductAddlProps> = ({
             description,
             availableQuantity,
             imageUrl,
+            categories,
           });
           setOpenDrawer(true);
         }}
