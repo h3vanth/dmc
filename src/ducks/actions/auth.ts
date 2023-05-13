@@ -55,6 +55,7 @@ const authenticate =
             token,
             email: data?.email,
             passcode: data?.passcode,
+            userId: data?.userId,
           })
         );
         dispatch(productActions.fetchProducts());
@@ -83,6 +84,7 @@ const authActions = {
     token: string;
     email: string;
     passcode: string;
+    userId: string;
   }) => ({
     type: authActionTypes.SET_AUTH_TOKEN,
     payload,

@@ -1,6 +1,5 @@
 import { ThunkAction } from "..";
 import { ALERT_SEVERITY, METHOD } from "../../constants";
-import { SC } from "../../helpers";
 import { PlacedOrders, ProductActionType } from "../../types";
 import { f3tch } from "../../utils";
 import { selectToken } from "../selectors";
@@ -95,9 +94,6 @@ const placeOrder = (): ThunkAction => async (dispatch, getState) => {
   });
 
   if (okResponse) {
-    SC.use({ token: state.auth.token }, (client) => {
-      client.send("/app/message");
-    });
     dispatch({
       type: orderActionTypes.EMPTY_ORDER,
     });

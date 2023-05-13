@@ -5,6 +5,7 @@ const initialState = {
   token: "",
   email: "",
   passcode: "",
+  userId: "",
 };
 
 const reducer = (

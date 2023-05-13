@@ -1,7 +1,6 @@
 import { ThunkAction } from "..";
 import { ALERT_SEVERITY, METHOD } from "../../constants";
 import { ERRORS } from "../../constants";
-import { SC } from "../../helpers";
 import { Obj, ProductData } from "../../types";
 import { f3tch, joinStringArray } from "../../utils";
 import { selectToken } from "../selectors";
@@ -90,9 +89,6 @@ const addProduct =
     });
     dispatch(commonActions.toggleLoaderState());
     if (okResponse) {
-      SC.use({ token: state.auth.token }, (client) => {
-        client.send("/app/message");
-      });
       dispatch(
         commonActions.showSnackbar({
           message: "Product added",
@@ -125,9 +121,6 @@ const updateProduct =
     });
     dispatch(commonActions.toggleLoaderState());
     if (okResponse) {
-      SC.use({ token: state.auth.token }, (client) => {
-        client.send("/app/message");
-      });
       dispatch(
         commonActions.showSnackbar({
           message: "Product updated",
@@ -159,9 +152,6 @@ const deleteProducts =
     });
     dispatch(commonActions.toggleLoaderState());
     if (okResponse) {
-      SC.use({ token: state.auth.token }, (client) => {
-        client.send("/app/message");
-      });
       dispatch(
         commonActions.showSnackbar({
           message: "Product(s) deleted",

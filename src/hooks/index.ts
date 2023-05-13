@@ -6,10 +6,9 @@ import { productActions } from "../ducks/actions/products";
 import { SC } from "../helpers";
 
 const useSocket = () => {
-  const { token, isOnline } = useAppSelector((state) => ({
-    token: state.auth.token,
-    isOnline: state.common.isOnline,
-  }));
+  const isOnline = useAppSelector((state) => state.common.isOnline);
+  const token = useAppSelector((state) => state.auth.token);
+  const userId = useAppSelector((state) => state.auth.userId);
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -17,7 +16,7 @@ const useSocket = () => {
       SC.use({
         token,
         subscription: {
-          destination: "/topic/products",
+          destination: `/topic/${userId}/products`,
           cb: (message) =>
             dispatch(productActions.setProducts(JSON.parse(message.body))),
         },
