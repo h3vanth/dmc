@@ -155,5 +155,3 @@ export interface SCUseOptions {
   subscriptions?: SCSubscription[];
   afterConn?: () => void;
 }
-
-export type SCExec = (client: Stomp.Client) => void;

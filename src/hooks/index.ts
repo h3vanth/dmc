@@ -34,6 +34,8 @@ const useSocket = () => {
         afterConn: () =>
           !isOnline && dispatch(commonActions.toggleOnlineStatus()),
       });
+    } else {
+      SC.diconnect();
     }
   }, [token, isOnline, dispatch]);
 };

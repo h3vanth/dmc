@@ -1,40 +1,36 @@
 import Stomp from "stompjs";
 
-import { SCExec, SCSubscription, SCUseOptions } from "../types";
+import { SCSubscription, SCUseOptions } from "../types";
 
 const noop = () => {};
 
 class SC {
-  static #client: Stomp.Client;
+  static #client: Stomp.Client | null;
   static #initialized: boolean;
   static #subscriptions: SCSubscription[] = [];
   static #afterConn: () => void = noop;
 
-  static #initialize({ token }: SCUseOptions, execute: SCExec) {
+  static #initialize({ token }: SCUseOptions) {
     SC.#initialized = true;
     SC.#client = Stomp.over(
       new WebSocket(`${import.meta.env.VITE_SOCKET_CONN_URL}?token=${token}`)
     );
     if (import.meta.env.PROD) {
-      this.#client.debug = noop;
+      this.#client!.debug = noop;
     }
-    SC.#connect(execute);
+    SC.#connect();
   }
 
-  static #connect(execute: SCExec) {
-    SC.#client.connect({}, (frame) => {
+  static #connect() {
+    SC.#client?.connect({}, (frame) => {
       SC.#subscriptions.forEach((s) => {
-        SC.#client.subscribe(s.destination, s.cb);
+        SC.#client?.subscribe(s.destination, s.cb);
       });
-      execute(SC.#client);
       SC.#afterConn();
     });
   }
 
-  static use(
-    { token, subscriptions, afterConn }: SCUseOptions,
-    execute: SCExec = noop
-  ) {
+  static use({ token, subscriptions, afterConn }: SCUseOptions) {
     if (afterConn != null) {
       SC.#afterConn = afterConn;
     }
@@ -50,12 +46,20 @@ class SC {
       });
     }
     if (!SC.#initialized) {
-      SC.#initialize({ token }, execute);
-    } else if (!SC.#client.connected) {
-      SC.#connect(execute);
-    } else if (SC.#initialized && SC.#client.connected) {
-      execute(SC.#client);
+      SC.#initialize({ token });
+    } else if (!SC.#client?.connected) {
+      SC.#connect();
     }
+  }
+
+  static diconnect() {
+    SC.#client?.disconnect(() => {
+      console.log("Terminated web socket connection");
+      SC.#client = null;
+      SC.#initialized = false;
+      SC.#subscriptions = [];
+      SC.#afterConn = noop;
+    });
   }
 }
 
