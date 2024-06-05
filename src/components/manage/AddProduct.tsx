@@ -195,36 +195,11 @@ const AddProduct = ({
                 const {
                   target: { value },
                 } = event;
-                if (typeof value === "string") {
-                  let selected = value.split(",");
-                  selected = selected.filter((v) => v !== "new_category");
-                  setProductCategories(selected);
-                } else {
-                  setProductCategories(
-                    value.filter((v) => v !== "new_category")
-                  );
-                }
+                setProductCategories(
+                  typeof value === "string" ? value.split(",") : value
+                );
               }}
             >
-              <MenuItem value="new_category">
-                <TextField
-                  placeholder="Add category"
-                  InputProps={{
-                    endAdornment: (
-                      <AddIcon
-                        sx={{ cursor: "pointer" }}
-                        onClick={addCategory}
-                      />
-                    ),
-                  }}
-                  sx={{
-                    width: "100%",
-                  }}
-                  inputProps={{
-                    ref: categoryRef,
-                  }}
-                />
-              </MenuItem>
               {categories.map((category) => (
                 <MenuItem key={category} value={category}>
                   {category}
@@ -232,6 +207,20 @@ const AddProduct = ({
               ))}
             </Select>
           </FormControl>
+          <TextField
+            placeholder="New category"
+            InputProps={{
+              endAdornment: (
+                <AddIcon sx={{ cursor: "pointer" }} onClick={addCategory} />
+              ),
+            }}
+            sx={{
+              width: "100%",
+            }}
+            inputProps={{
+              ref: categoryRef,
+            }}
+          />
         </Stack>
       </Box>
     </Dialog>
