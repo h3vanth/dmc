@@ -195,12 +195,18 @@ const AddProduct = ({
                 const {
                   target: { value },
                 } = event;
-                setProductCategories(
-                  typeof value === "string" ? value.split(",") : value
-                );
+                if (typeof value === "string") {
+                  let selected = value.split(",");
+                  selected = selected.filter((v) => v !== "new_category");
+                  setProductCategories(selected);
+                } else {
+                  setProductCategories(
+                    value.filter((v) => v !== "new_category")
+                  );
+                }
               }}
             >
-              <Box sx={{ padding: "6px 16px" }}>
+              <MenuItem value="new_category">
                 <TextField
                   placeholder="Add category"
                   InputProps={{
@@ -218,7 +224,7 @@ const AddProduct = ({
                     ref: categoryRef,
                   }}
                 />
-              </Box>
+              </MenuItem>
               {categories.map((category) => (
                 <MenuItem key={category} value={category}>
                   {category}
