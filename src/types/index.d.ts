@@ -147,11 +147,33 @@ export interface PlacedOrder {
 export type PlacedOrders = PlacedOrder[];
 
 export interface SCSubscription {
-  destination: string;
+  topic: string;
   cb: (message: Stomp.Message) => void;
 }
 export interface SCUseOptions {
   token: string;
   subscriptions?: SCSubscription[];
   afterConn?: () => void;
+}
+
+export interface Event {
+  type: string;
+  userId: string;
+}
+
+export interface ProductCategoryCreatedEvent extends Event {
+  categories: string[];
+}
+
+export interface ProductCategoryRemovedEvent extends Event, ProductData {
+  categoriesBeforeRemoval: string[];
+}
+
+export interface OrderPlacedEvent extends Event {
+  orderId: string;
+  productName: string;
+  productId: string;
+  quantity: number;
+  price: number;
+  sessionId: string;
 }

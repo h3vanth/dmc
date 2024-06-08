@@ -24,7 +24,7 @@ class SC {
   static #connect() {
     SC.#client?.connect({}, (frame) => {
       SC.#subscriptions.forEach((s) => {
-        SC.#client?.subscribe(s.destination, s.cb);
+        SC.#client?.subscribe(s.topic, s.cb);
       });
       SC.#afterConn();
     });
@@ -36,11 +36,7 @@ class SC {
     }
     if (subscriptions != null) {
       subscriptions.forEach((subscription) => {
-        if (
-          !SC.#subscriptions.some(
-            (s) => s.destination === subscription.destination
-          )
-        ) {
+        if (!SC.#subscriptions.some((s) => s.topic === subscription.topic)) {
           SC.#subscriptions.push(subscription);
         }
       });

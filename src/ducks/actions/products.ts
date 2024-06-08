@@ -1,9 +1,10 @@
 import { ThunkAction } from "..";
 import { ALERT_SEVERITY, METHOD } from "../../constants";
 import { ERRORS } from "../../constants";
-import { Obj, ProductData } from "../../types";
+import { Obj, ProductData, ProductCategoryCreatedEvent } from "../../types";
 import { f3tch, joinStringArray } from "../../utils";
 import { selectToken } from "../selectors";
+import { categoriesActions } from "./categories";
 import { commonActions } from "./common";
 import { orderActionTypes } from "./orders";
 
@@ -171,12 +172,67 @@ const deleteProducts =
     }
   };
 
+const adjustProducts =
+  (event: any): ThunkAction =>
+  async (dispatch, getState) => {
+    const eventType = event.type;
+    const { products } = getState();
+    switch (eventType) {
+      case "ProductCreated":
+        const product = event as ProductData;
+        dispatch(productActions.setProducts([...products, product]));
+        break;
+      case "ProductUpdated":
+      case "ProductCategoryRemoved": // TODO Not supported currently
+        const updatedProduct = event as ProductData;
+        const productId = updatedProduct.productId;
+        dispatch(
+          productActions.setProducts(
+            products.map((product) => {
+              if (product.productId === productId) {
+                return updatedProduct;
+              }
+              return product;
+            })
+          )
+        );
+        break;
+      case "ProductDeleted":
+        const deleted = (event as ProductData).productId;
+        dispatch(
+          productActions.setProducts(
+            products.filter((product) => {
+              if (product.productId !== deleted) {
+                return true;
+              }
+              return false;
+            })
+          )
+        );
+        break;
+      case "ProductCategoryCreated":
+        dispatch(
+          categoriesActions.setCategories(
+            (event as ProductCategoryCreatedEvent).categories
+          )
+        );
+        break;
+      // TODO
+      case "OrderPlaced":
+        dispatch({ type: orderActionTypes.EMPTY_ORDER });
+        break;
+      default:
+        throw new Error("Invalid event type");
+    }
+  };
+
 const productActions = {
   fetchProducts,
   setProducts,
   addProduct,
   updateProduct,
   deleteProducts,
+  adjustProducts,
 };
 
 export { productActionTypes, productActions };

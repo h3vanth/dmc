@@ -18,17 +18,20 @@ const useSocket = () => {
         token,
         subscriptions: [
           {
-            destination: `/topic/${userId}/products`,
+            topic: `/${userId}/products`,
             cb: (message) =>
-              dispatch(productActions.setProducts(JSON.parse(message.body))),
+              dispatch(productActions.adjustProducts(JSON.parse(message.body))),
           },
           {
-            destination: `/topic/${userId}/categories`,
+            topic: `/${userId}/categories`,
             cb: (message) =>
-              dispatch({
-                type: categoriesActionTypes.SET_CATEGORIES,
-                payload: JSON.parse(message.body),
-              }),
+              dispatch(productActions.adjustProducts(JSON.parse(message.body))),
+          },
+          // TODO
+          {
+            topic: `/${userId}/placedOrders`,
+            cb: (message) =>
+              dispatch(productActions.adjustProducts(JSON.parse(message.body))),
           },
         ],
         afterConn: () =>

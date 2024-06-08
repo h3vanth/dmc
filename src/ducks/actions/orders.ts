@@ -73,6 +73,7 @@ const placeOrder = (): ThunkAction => async (dispatch, getState) => {
       [key: string]: string | number | undefined;
     } = {};
     if (placedOrder) {
+      // TODO: We shouldn't ideally use the same orderId for an item
       prodObj.orderId = placedOrder.orderId;
       prodObj.quantity = placedOrder.quantity + order[key].quantity;
     } else {
