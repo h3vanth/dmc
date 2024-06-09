@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../ducks";
 import { commonActions } from "../ducks/actions/common";
 import { productActions } from "../ducks/actions/products";
 import { SC } from "../helpers";
-import { categoriesActionTypes } from "../ducks/actions/categories";
+import { eventActions } from "../ducks/actions/events";
 
 const useSocket = () => {
   const isOnline = useAppSelector((state) => state.common.isOnline);
@@ -19,13 +19,17 @@ const useSocket = () => {
         subscriptions: [
           {
             topic: `/${userId}/products`,
-            cb: (message) =>
-              dispatch(productActions.adjustProducts(JSON.parse(message.body))),
+            cb: (message) => {
+              dispatch(productActions.adjustProducts(JSON.parse(message.body)));
+              dispatch(eventActions.addEvent(JSON.parse(message.body)));
+            },
           },
           {
             topic: `/${userId}/categories`,
-            cb: (message) =>
-              dispatch(productActions.adjustProducts(JSON.parse(message.body))),
+            cb: (message) => {
+              dispatch(productActions.adjustProducts(JSON.parse(message.body)));
+              dispatch(eventActions.addEvent(JSON.parse(message.body)));
+            },
           },
           // TODO
           {

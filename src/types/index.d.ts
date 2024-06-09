@@ -159,6 +159,7 @@ export interface SCUseOptions {
 export interface Event {
   type: string;
   userId: string;
+  timestamp: string;
 }
 
 export interface ProductCategoryCreatedEvent extends Event {

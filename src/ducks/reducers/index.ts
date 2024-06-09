@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 
 import common, { initialState as initState_common } from "./common";
+import events, { initialState as initialState_events } from "./events";
 import orders, { initialState as initState_orders } from "./orders";
 import auth, { initialState as initState_auth } from "./auth";
 import products, { initialState as initialState_products } from "./products";
@@ -15,6 +16,7 @@ const INITIAL_STATE = {
   auth: initState_auth,
   products: initialState_products,
   categories: initialState_categories,
+  events: initialState_events,
 };
 
 const appReducer = combineReducers({
@@ -23,6 +25,7 @@ const appReducer = combineReducers({
   auth,
   products,
   categories,
+  events,
 });
 
 const rootReducer = (state: any, action: any) => {
