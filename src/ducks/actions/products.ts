@@ -172,6 +172,11 @@ const deleteProducts =
     }
   };
 
+const deleteEventFields = (event: any) => {
+  delete event.timestamp;
+  delete event.type;
+};
+
 const adjustProducts =
   (event: any): ThunkAction =>
   async (dispatch, getState) => {
@@ -179,17 +184,21 @@ const adjustProducts =
     const { products } = getState();
     switch (eventType) {
       case "ProductCreated":
+        deleteEventFields(event);
         const product = event as ProductData;
         dispatch(productActions.setProducts([...products, product]));
         break;
       case "ProductUpdated":
       case "ProductCategoryRemoved": // TODO Not supported currently
-        const updatedProduct = event as ProductData;
+        deleteEventFields(event);
+        const updatedProduct = event;
         const productId = updatedProduct.productId;
         dispatch(
           productActions.setProducts(
             products.map((product) => {
               if (product.productId === productId) {
+                delete updatedProduct.productBeforeUpdate;
+                delete updatedProduct.category;
                 return updatedProduct;
               }
               return product;
