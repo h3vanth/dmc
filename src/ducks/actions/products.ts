@@ -23,10 +23,7 @@ const fetchProducts = (): ThunkAction => async (dispatch, getState) => {
   });
   dispatch(commonActions.toggleLoaderState());
   if (okResponse) {
-    dispatch({
-      type: productActionTypes.SET_PRODUCTS,
-      payload: data,
-    });
+    setProducts(data);
   } else {
     dispatch(
       commonActions.showSnackbar({
@@ -48,6 +45,9 @@ const setProducts =
     });
     const order = JSON.parse(JSON.stringify(getState().orders.order));
     const orderProductIds = Object.keys(order);
+
+    if (orderProductIds.length === 0) return;
+
     const orderedProducts = products.filter(({ productId }) =>
       orderProductIds.includes(productId)
     );
@@ -186,38 +186,39 @@ const adjustProducts =
       case "ProductCreated":
         deleteEventFields(event);
         const product = event as ProductData;
-        dispatch(productActions.setProducts([...products, product]));
+        dispatch({
+          type: productActionTypes.SET_PRODUCTS,
+          payload: [...products, product],
+        });
         break;
       case "ProductUpdated":
-      case "ProductCategoryRemoved": // TODO Not supported currently
+      case "ProductCategoryRemoved":
         deleteEventFields(event);
         const updatedProduct = event;
         const productId = updatedProduct.productId;
-        dispatch(
-          productActions.setProducts(
-            products.map((product) => {
-              if (product.productId === productId) {
-                delete updatedProduct.productBeforeUpdate;
-                delete updatedProduct.category;
-                return updatedProduct;
-              }
-              return product;
-            })
-          )
-        );
+        dispatch({
+          type: productActionTypes.SET_PRODUCTS,
+          payload: products.map((product) => {
+            if (product.productId === productId) {
+              delete updatedProduct.productBeforeUpdate;
+              delete updatedProduct.category;
+              return updatedProduct;
+            }
+            return product;
+          }),
+        });
         break;
       case "ProductDeleted":
         const deleted = (event as ProductData).productId;
-        dispatch(
-          productActions.setProducts(
-            products.filter((product) => {
-              if (product.productId !== deleted) {
-                return true;
-              }
-              return false;
-            })
-          )
-        );
+        dispatch({
+          type: productActionTypes.SET_PRODUCTS,
+          payload: products.filter((product) => {
+            if (product.productId !== deleted) {
+              return true;
+            }
+            return false;
+          }),
+        });
         break;
       case "ProductCategoryCreated":
         dispatch(
@@ -226,9 +227,8 @@ const adjustProducts =
           )
         );
         break;
-      // TODO
       case "OrderPlaced":
-        dispatch({ type: orderActionTypes.EMPTY_ORDER });
+        fetchProducts();
         break;
       default:
         throw new Error("Invalid event type");

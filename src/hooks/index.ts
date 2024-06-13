@@ -31,11 +31,12 @@ const useSocket = () => {
               dispatch(eventActions.addEvent(JSON.parse(message.body)));
             },
           },
-          // TODO
           {
             topic: `/${userId}/placedOrders`,
-            cb: (message) =>
-              dispatch(productActions.adjustProducts(JSON.parse(message.body))),
+            cb: (message) => {
+              dispatch(productActions.adjustProducts(JSON.parse(message.body)));
+              dispatch(eventActions.addEvent(JSON.parse(message.body)));
+            },
           },
         ],
         afterConn: () =>
