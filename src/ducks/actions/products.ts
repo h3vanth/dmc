@@ -23,7 +23,7 @@ const fetchProducts = (): ThunkAction => async (dispatch, getState) => {
   });
   dispatch(commonActions.toggleLoaderState());
   if (okResponse) {
-    setProducts(data);
+    dispatch(setProducts(data));
   } else {
     dispatch(
       commonActions.showSnackbar({
@@ -228,7 +228,7 @@ const adjustProducts =
         );
         break;
       case "OrderPlaced":
-        fetchProducts();
+        dispatch(fetchProducts());
         break;
       default:
         throw new Error("Invalid event type");
