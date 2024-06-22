@@ -4,7 +4,7 @@ import { commonActionTypes } from "../actions/common";
 const initialState = {
   isLoading: false,
   snackbar: { message: "", severity: ALERT_SEVERITY.SUCCESS, open: false },
-  isOnline: false,
+  online: false,
   sessionId: new Date().toISOString(),
   allowNavigation: true,
 };
@@ -21,7 +21,10 @@ const reducer = (
     case commonActionTypes.TOGGLE_LOADER_STATE:
       return { ...state, isLoading: !state.isLoading };
     case commonActionTypes.TOGGLE_ONLINE_STATUS:
-      return { ...state, isOnline: !state.isOnline };
+      return {
+        ...state,
+        online: action.payload,
+      };
     case commonActionTypes.SET_SESSION_ID:
       return { ...state, sessionId: action.payload };
     case commonActionTypes.TOGGLE_NAV_CONTROL:

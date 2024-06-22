@@ -20,8 +20,9 @@ const commonActions = {
   toggleLoaderState: () => ({
     type: commonActionTypes.TOGGLE_LOADER_STATE,
   }),
-  toggleOnlineStatus: () => ({
+  setOnlineStatus: (payload: boolean) => ({
     type: commonActionTypes.TOGGLE_ONLINE_STATUS,
+    payload,
   }),
   toggleNavControl: () => ({
     type: commonActionTypes.TOGGLE_NAV_CONTROL,

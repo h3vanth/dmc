@@ -1,5 +1,5 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { createStore, applyMiddleware, ActionCreator, Action } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import thunk, { ThunkDispatch } from "redux-thunk";
 
 import rootReducer, { INITIAL_STATE } from "./reducers";
@@ -14,9 +14,11 @@ const store = createStore(
 );
 
 window.onbeforeunload = function () {
-  const state = store.getState();
+  const state = structuredClone(store.getState());
   if (state.auth.isAuth) {
+    state.common.online = false;
     // TODO: can be encrypted and stored
+    // TODO: make key env specific
     sessionStorage.setItem("dmc", JSON.stringify(state));
   }
 };

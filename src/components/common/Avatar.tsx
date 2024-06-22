@@ -15,14 +15,14 @@ const StyledBadge = styled(Badge)(({ theme, color }) => ({
 }));
 
 const Avatar: React.FC<AvatarProps> = ({ src, alt, initials, sx }) => {
-  const isOnline = useAppSelector((state) => state.common.isOnline);
+  const online = useAppSelector((state) => state.common.online);
 
   return (
     <StyledBadge
       overlap="circular"
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       variant="dot"
-      color={isOnline ? "success" : "error"}
+      color={online ? "success" : "error"}
     >
       <MuiAvatar alt={alt} src={src} sx={sx}>
         {initials}

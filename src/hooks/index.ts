@@ -7,7 +7,7 @@ import { SC } from "../helpers";
 import { eventActions } from "../ducks/actions/events";
 
 const useSocket = () => {
-  const isOnline = useAppSelector((state) => state.common.isOnline);
+  const online = useAppSelector((state) => state.common.online);
   const token = useAppSelector((state) => state.auth.token);
   const userId = useAppSelector((state) => state.auth.userId);
   const dispatch = useAppDispatch();
@@ -38,14 +38,15 @@ const useSocket = () => {
               dispatch(eventActions.addEvent(JSON.parse(message.body)));
             },
           },
+          // TODO: Create client specific topic for sync
         ],
-        afterConn: () =>
-          !isOnline && dispatch(commonActions.toggleOnlineStatus()),
+        setOnlineStatus: (online) =>
+          dispatch(commonActions.setOnlineStatus(online)),
       });
     } else {
       SC.diconnect();
     }
-  }, [token, isOnline, dispatch]);
+  }, [token, online, dispatch]);
 };
 
 export { useSocket };

@@ -152,8 +152,8 @@ export interface SCSubscription {
 }
 export interface SCUseOptions {
   token: string;
-  subscriptions?: SCSubscription[];
-  afterConn?: () => void;
+  subscriptions: SCSubscription[];
+  setOnlineStatus: (online: boolean) => void;
 }
 
 export interface Event {

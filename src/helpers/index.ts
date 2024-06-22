@@ -5,10 +5,12 @@ import { SCSubscription, SCUseOptions } from "../types";
 const noop = () => {};
 
 class SC {
+  static #connecting = false;
+  static #disconnecting = false;
   static #client: Stomp.Client | null;
   static #initialized: boolean;
   static #subscriptions: SCSubscription[] = [];
-  static #afterConn: () => void = noop;
+  static #setOnlineStatus: (online: boolean) => void;
 
   static #initialize({ token }: SCUseOptions) {
     SC.#initialized = true;
@@ -22,17 +24,30 @@ class SC {
   }
 
   static #connect() {
-    SC.#client?.connect({}, (frame) => {
-      SC.#subscriptions.forEach((s) => {
-        SC.#client?.subscribe(s.topic, s.cb);
-      });
-      SC.#afterConn();
-    });
+    if (SC.#connecting) return;
+
+    SC.#connecting = true;
+    SC.#client?.connect(
+      {},
+      (frame) => {
+        SC.#subscriptions.forEach((s) => {
+          SC.#client?.subscribe(s.topic, s.cb);
+        });
+        SC.#connecting = false;
+        SC.#setOnlineStatus(true);
+      },
+      (error) => {
+        // TODO: Implement retry
+        SC.#connecting = false;
+        SC.#setOnlineStatus(false);
+      }
+    );
   }
 
-  static use({ token, subscriptions, afterConn }: SCUseOptions) {
-    if (afterConn != null) {
-      SC.#afterConn = afterConn;
+  static use(scOptions: SCUseOptions) {
+    const { subscriptions, setOnlineStatus } = scOptions;
+    if (setOnlineStatus != null) {
+      SC.#setOnlineStatus = setOnlineStatus;
     }
     if (subscriptions != null) {
       subscriptions.forEach((subscription) => {
@@ -42,19 +57,22 @@ class SC {
       });
     }
     if (!SC.#initialized) {
-      SC.#initialize({ token });
+      SC.#initialize(scOptions);
     } else if (!SC.#client?.connected) {
       SC.#connect();
     }
   }
 
   static diconnect() {
+    if (SC.#disconnecting || !SC.#client?.connected) return;
+
+    SC.#disconnecting = true;
     SC.#client?.disconnect(() => {
-      console.log("Terminated web socket connection");
       SC.#client = null;
       SC.#initialized = false;
+      SC.#disconnecting = true;
       SC.#subscriptions = [];
-      SC.#afterConn = noop;
+      SC.#setOnlineStatus(false);
     });
   }
 }
