@@ -1,27 +1,29 @@
-import * as React from "react";
-import MuiAppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import Container from "@mui/material/Container";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
-import { useNavigate } from "react-router-dom";
+import * as React from 'react';
 
-import Dialog from "../../base/Dialog";
-import TextField from "../../base/TextField";
-import Avatar from "../common/Avatar";
-import { useAppDispatch, useAppSelector } from "../../ducks";
-import { getInitial } from "../../utils";
-import { account } from "../../mocks/account";
-import { authActions } from "../../ducks/actions/auth";
-import { ALERT_SEVERITY, PAGES } from "../../constants";
-import { commonActions } from "../../ducks/actions/common";
+import AvatarGroup from '@mui/material/AvatarGroup';
+import MuiAppBar from '@mui/material/AppBar';
+import Grid from '@mui/material/Grid';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import Container from '@mui/material/Container';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import { useNavigate } from 'react-router-dom';
+
+import Dialog from '../../base/Dialog';
+import TextField from '../../base/TextField';
+import Avatar from '../common/Avatar';
+import { useAppDispatch, useAppSelector } from '../../ducks';
+import { getInitial } from '../../utils';
+import { account } from '../../mocks/account';
+import { authActions } from '../../ducks/actions/auth';
+import { ALERT_SEVERITY, PAGES } from '../../constants';
+import { commonActions } from '../../ducks/actions/common';
 
 const AppBar: React.FC = () => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -51,100 +53,107 @@ const AppBar: React.FC = () => {
 
   return (
     <>
-      <MuiAppBar position="static">
-        <Container maxWidth="xl">
+      <MuiAppBar position='static'>
+        <Container maxWidth='xl'>
           <Toolbar
             disableGutters
-            sx={{ display: "flex", justifyContent: "space-between" }}
+            sx={{ display: 'flex', justifyContent: 'space-between' }}
           >
             <MenuBookIcon sx={{ mr: 1 }} />
             <Typography
-              variant="h6"
+              variant='h6'
               noWrap
-              component="a"
-              href="/"
+              component='a'
+              href='/'
               sx={{
-                mr: "auto",
-                fontFamily: "monospace",
+                mr: 'auto',
+                fontFamily: 'monospace',
                 fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
               }}
             >
               DMC
             </Typography>
 
             {isAuth && (
-              <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar
-                      initials={
-                        allowNavigation
-                          ? getInitial(account.username)
-                          : undefined
-                      }
-                    />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  {PAGES.filter(({ path }) =>
-                    allowNavigation ? true : path === "/"
-                  ).map(({ page, path }) => (
-                    <MenuItem
-                      key={page}
-                      onClick={() => {
-                        handleCloseUserMenu();
-                        if (path === "/login") {
-                          dispatch(authActions.destroyStore());
-                        }
-                        navigate(path);
-                      }}
-                    >
-                      <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-                <Tooltip
-                  title={
-                    allowNavigation ? "Lock navigation" : "Enable navigation"
-                  }
-                >
-                  <IconButton
-                    onClick={() => {
-                      if (!allowNavigation) {
-                        return setOpenDialog(true);
-                      }
-                      toggleNavControl();
-                      dispatch(
-                        commonActions.showSnackbar({
-                          severity: ALERT_SEVERITY.INFO,
-                          message: "Only dashboard will be accessible now",
-                        })
-                      );
+              <Grid container justifyContent='flex-end' alignItems='center'>
+                <Grid item>
+                  {/* Hardcoding to 1 for now. Awaiting backend impl. */}
+                  <AvatarGroup total={1}>
+                    <Tooltip title='Open settings'>
+                      <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar
+                          initials={
+                            allowNavigation
+                              ? getInitial(account.username)
+                              : undefined
+                          }
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </AvatarGroup>
+                  <Menu
+                    sx={{ mt: '45px' }}
+                    id='menu-appbar'
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
                     }}
-                    sx={{ ml: 2 }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
                   >
-                    {allowNavigation ? <LockIcon /> : <LockOpenIcon />}
-                  </IconButton>
-                </Tooltip>
-              </Box>
+                    {PAGES.filter(({ path }) =>
+                      allowNavigation ? true : path === '/'
+                    ).map(({ page, path }) => (
+                      <MenuItem
+                        key={page}
+                        onClick={() => {
+                          handleCloseUserMenu();
+                          if (path === '/login') {
+                            dispatch(authActions.destroyStore());
+                          }
+                          navigate(path);
+                        }}
+                      >
+                        <Typography textAlign='center'>{page}</Typography>
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </Grid>
+                <Grid item>
+                  <Tooltip
+                    title={
+                      allowNavigation ? 'Lock navigation' : 'Enable navigation'
+                    }
+                  >
+                    <IconButton
+                      onClick={() => {
+                        if (!allowNavigation) {
+                          return setOpenDialog(true);
+                        }
+                        toggleNavControl();
+                        dispatch(
+                          commonActions.showSnackbar({
+                            severity: ALERT_SEVERITY.INFO,
+                            message: 'Only dashboard will be accessible now',
+                          })
+                        );
+                      }}
+                      sx={{ ml: 2 }}
+                    >
+                      {allowNavigation ? <LockIcon /> : <LockOpenIcon />}
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </Grid>
             )}
           </Toolbar>
         </Container>
@@ -159,15 +168,15 @@ const AppBar: React.FC = () => {
             setOpenDialog(false);
             toggleNavControl();
           } else {
-            passcodeRef.current!.value = "";
+            passcodeRef.current!.value = '';
           }
         }}
-        title="Enter code"
-        buttonLabel="Verify"
+        title='Enter code'
+        buttonLabel='Verify'
         fullScreen={false}
       >
         <TextField
-          name="passcode"
+          name='passcode'
           inputProps={{
             ref: passcodeRef,
           }}
