@@ -1,14 +1,15 @@
-import { ThunkAction } from "..";
-import { METHOD, ERRORS, ALERT_SEVERITY } from "../../constants";
-import { f3tch, joinStringArray } from "../../utils";
-import { categoriesActions } from "./categories";
-import { commonActions } from "./common";
-import { productActions } from "./products";
+import { ThunkAction } from '..';
+import { METHOD, ERRORS, ALERT_SEVERITY } from '../../constants';
+import { f3tch, joinStringArray } from '../../utils';
+import { categoriesActions } from './categories';
+import { commonActions } from './common';
+import { productActions } from './products';
 
 const authActionTypes = {
-  SET_AUTH_TOKEN: "SET_AUTH_TOKEN",
-  LOGOUT: "LOGOUT",
-  DESTROY_STORE: "DESTROY_STORE",
+  SET_AUTH_TOKEN: 'SET_AUTH_TOKEN',
+  LOGOUT: 'LOGOUT',
+  DESTROY_STORE: 'DESTROY_STORE',
+  UPDATE_SESSION_COUNT: 'UPDATE_SESSION_COUNT',
 };
 
 const register =
@@ -49,7 +50,7 @@ const authenticate =
     });
     dispatch(commonActions.toggleLoaderState());
     if (okResponse) {
-      const token = headers?.get("authorization")?.split(" ")?.[1];
+      const token = headers?.get('authorization')?.split(' ')?.[1];
       if (token) {
         dispatch(
           authActions.setAuthToken({

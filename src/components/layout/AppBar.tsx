@@ -32,11 +32,14 @@ const AppBar: React.FC = () => {
   const [openDialog, setOpenDialog] = React.useState(false);
   const passcodeRef = React.useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
-  const { isAuth, allowNavigation, passcode } = useAppSelector((state) => ({
-    isAuth: state.auth.isAuth,
-    allowNavigation: state.common.allowNavigation,
-    passcode: state.auth.passcode,
-  }));
+  const { isAuth, allowNavigation, passcode, currentSessions } = useAppSelector(
+    (state) => ({
+      isAuth: state.auth.isAuth,
+      allowNavigation: state.common.allowNavigation,
+      passcode: state.auth.passcode,
+      currentSessions: state.auth.currentSessions,
+    })
+  );
   const dispatch = useAppDispatch();
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -80,8 +83,7 @@ const AppBar: React.FC = () => {
             {isAuth && (
               <Grid container justifyContent='flex-end' alignItems='center'>
                 <Grid item>
-                  {/* Hardcoding to 1 for now. Awaiting backend impl. */}
-                  <AvatarGroup total={1}>
+                  <AvatarGroup total={currentSessions}>
                     <Tooltip title='Open settings'>
                       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                         <Avatar

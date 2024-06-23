@@ -1,11 +1,12 @@
-import { authActionTypes } from "../actions/auth";
+import { authActionTypes } from '../actions/auth';
 
 const initialState = {
   isAuth: false,
-  token: "",
-  email: "",
-  passcode: "",
-  userId: "",
+  token: '',
+  email: '',
+  passcode: '',
+  userId: '',
+  currentSessions: 0,
 };
 
 const reducer = (
@@ -18,6 +19,8 @@ const reducer = (
         isAuth: true,
         ...action.payload,
       };
+    case authActionTypes.UPDATE_SESSION_COUNT:
+      return { ...state, currentSessions: action.payload };
     case authActionTypes.LOGOUT:
       return { ...initialState };
     default:
