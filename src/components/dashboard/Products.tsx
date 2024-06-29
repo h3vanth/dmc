@@ -1,30 +1,29 @@
-import * as React from "react";
-import Grid from "@mui/material/Grid";
-import Pagination from "@mui/material/Pagination";
-import Product from "./Product";
-import Drawer from "../../base/Drawer";
-import ProductDetails from "./ProductDetails";
-import IconButton from "@mui/material/IconButton";
-import FastfoodIcon from "@mui/icons-material/Fastfood";
-import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
-import ClearAllIcon from "@mui/icons-material/ClearAll";
-import Tooltip from "@mui/material/Tooltip";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-import { useNavigate } from "react-router-dom";
-import { useUpdateEffect } from "usehooks-ts";
+import * as React from 'react';
+import Grid from '@mui/material/Grid';
+import Pagination from '@mui/material/Pagination';
+import Product from './Product';
+import Drawer from '../../base/Drawer';
+import ProductDetails from './ProductDetails';
+import IconButton from '@mui/material/IconButton';
+import FastfoodIcon from '@mui/icons-material/Fastfood';
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
+import { useNavigate } from 'react-router-dom';
+import { useUpdateEffect } from 'usehooks-ts';
 
-import Dialog from "../../base/Dialog";
-import TextField from "../../base/TextField";
+import Dialog from '../../base/Dialog';
+import TextField from '../../base/TextField';
 
-import Order from "./Order";
-import { useAppDispatch, useAppSelector } from "../../ducks";
-import { orderActions, orderActionTypes } from "../../ducks/actions/orders";
-import { commonActions, commonActionTypes } from "../../ducks/actions/common";
-import { account } from "../../mocks/account";
-import { ProductData } from "../../types";
-import { ModalContent } from "../../constants/orders";
-import { ALERT_SEVERITY } from "../../constants";
+import Order from './Order';
+import { useAppDispatch, useAppSelector } from '../../ducks';
+import { orderActions, orderActionTypes } from '../../ducks/actions/orders';
+import { commonActions, commonActionTypes } from '../../ducks/actions/common';
+import { account } from '../../mocks/account';
+import { ProductData } from '../../types';
+import { ModalContent } from '../../constants/orders';
+import { ALERT_SEVERITY } from '../../constants';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -60,11 +59,11 @@ const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
   const getDialogButtonLabel = () => {
     let buttonLabel;
     if (modalContent === ModalContent.ReviewOrder) {
-      buttonLabel = "Place order";
+      buttonLabel = 'Place order';
     } else if (modalContent === ModalContent.PlacedOrders) {
-      buttonLabel = "Pay";
+      buttonLabel = 'Pay';
     } else if (modalContent === ModalContent.ClearSession) {
-      buttonLabel = "Clear";
+      buttonLabel = 'Clear';
     }
     return buttonLabel;
   };
@@ -77,6 +76,7 @@ const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
       openDrawer === true &&
       selectedProduct != null &&
       prod != null &&
+      selectedProduct.categories != null &&
       selectedProduct.categories.length !== prod.categories.length
     ) {
       setSelectedProduct(prod);
@@ -87,8 +87,8 @@ const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
     <>
       <Grid
         container
-        justifyContent="space-between"
-        alignItems="center"
+        justifyContent='space-between'
+        alignItems='center'
         sx={{ mb: 1 }}
       >
         {products.length > ITEMS_PER_PAGE && (
@@ -103,7 +103,7 @@ const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
         )}
         <Grid item>
           {shouldShowOrder && (
-            <Tooltip title="Review order">
+            <Tooltip title='Review order'>
               <IconButton
                 onClick={() => {
                   setOpenDialog(true);
@@ -115,7 +115,7 @@ const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
             </Tooltip>
           )}
           {Object.keys(placedOrders).length !== 0 && (
-            <Tooltip title="View placed orders">
+            <Tooltip title='View placed orders'>
               <IconButton
                 onClick={() => {
                   setOpenDialog(true);
@@ -155,14 +155,14 @@ const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
           })}
         {products.length === 0 && (
           <Grid item xs={12}>
-            <Typography color="white">
-              No product available.{" "}
+            <Typography color='white'>
+              No product available.{' '}
               {!available && allowNavigation && (
                 <>
-                  To add one click{" "}
+                  To add one click{' '}
                   <Link
-                    onClick={() => navigate("/manage/products")}
-                    sx={{ cursor: "pointer" }}
+                    onClick={() => navigate('/manage')}
+                    sx={{ cursor: 'pointer' }}
                   >
                     here
                   </Link>
@@ -209,7 +209,7 @@ const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
               });
               dispatch(
                 commonActions.showSnackbar({
-                  message: "New session established!",
+                  message: 'New session established!',
                   severity: ALERT_SEVERITY.INFO,
                 })
               );
@@ -222,8 +222,8 @@ const Products: React.FC<{ products: ProductData[]; available?: boolean }> = ({
       >
         {modalContent === ModalContent.ClearSession ? (
           <TextField
-            placeholder="Enter password"
-            name="clearsessionpass"
+            placeholder='Enter password'
+            name='clearsessionpass'
             inputProps={{
               ref: clearsessionpassRef,
             }}
