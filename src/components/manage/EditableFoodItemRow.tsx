@@ -1,22 +1,22 @@
-import * as React from "react";
-import IconButton from "@mui/material/IconButton";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import TextField from "../../base/TextField";
-import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import Checkbox from "@mui/material/Checkbox";
-import DoneIcon from "@mui/icons-material/Done";
-import Switch from "@mui/material/Switch";
-import { useForm } from "react-hook-form";
+import * as React from 'react';
+import IconButton from '@mui/material/IconButton';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import TextField from '../../base/TextField';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import Checkbox from '@mui/material/Checkbox';
+import DoneIcon from '@mui/icons-material/Done';
+import Switch from '@mui/material/Switch';
+import { useForm } from 'react-hook-form';
 
-import { productActions } from "../../ducks/actions/products";
-import { useAppDispatch } from "../../ducks";
-import { EditableProductRowProps, Obj } from "../../types";
+import { productActions } from '../../ducks/actions/products';
+import { useAppDispatch } from '../../ducks';
+import { EditableProductRowProps, Obj } from '../../types';
 
 // TODO: Future scope - can update image, description
-const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
+const EditableFoodItemRow: React.FC<EditableProductRowProps> = (props) => {
   const {
     product,
     product: { productId, productName, availableQuantity, price, isAvailable },
@@ -35,8 +35,8 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
     watch,
     reset,
   } = useForm<Obj>({
-    mode: "all",
-    reValidateMode: "onChange",
+    mode: 'all',
+    reValidateMode: 'onChange',
     defaultValues: {
       [`productName_${productId}`]: productName,
       [`availableQuantity_${productId}`]: availableQuantity,
@@ -71,9 +71,9 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
     handleSubmit((data) => {
       const payload: Obj = { ...product };
       for (const key in data) {
-        payload[key.split("_")[0]] = data[key];
+        payload[key.split('_')[0]] = data[key];
       }
-      payload["isAvailable"] = available;
+      payload['isAvailable'] = available;
       if (
         payload.productName != productName ||
         payload.price != price ||
@@ -109,18 +109,18 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
     <TableRow
       hover
       onClick={(event) => handleClick(event, productId)}
-      role="checkbox"
+      role='checkbox'
       aria-checked={isItemSelected}
       tabIndex={-1}
       key={productId}
       selected={isItemSelected}
     >
-      <TableCell padding="checkbox">
+      <TableCell padding='checkbox'>
         <Checkbox
-          color="primary"
+          color='primary'
           checked={isItemSelected}
           inputProps={{
-            "aria-labelledby": labelId,
+            'aria-labelledby': labelId,
           }}
         />
       </TableCell>
@@ -162,22 +162,22 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
           error={!!errors?.[`price_${productId}`]}
         />
       </TableCell>
-      <TableCell align="center">
+      <TableCell align='center'>
         {inEditMode ? (
           <Switch
-            color="success"
+            color='success'
             checked={available}
             onChange={() => setAvailable((available) => !available)}
             onClick={(event) => event.stopPropagation()}
             disabled={invalidQuantity}
           />
         ) : isAvailable ? (
-          <CheckCircleOutlineOutlinedIcon color="success" />
+          <CheckCircleOutlineOutlinedIcon color='success' />
         ) : (
-          <CancelOutlinedIcon color="error" />
+          <CancelOutlinedIcon color='error' />
         )}
       </TableCell>
-      <TableCell align="center">
+      <TableCell align='center'>
         <IconButton
           onClick={(event) => {
             event.stopPropagation();
@@ -195,4 +195,4 @@ const EditableProductRow: React.FC<EditableProductRowProps> = (props) => {
   );
 };
 
-export default EditableProductRow;
+export default EditableFoodItemRow;

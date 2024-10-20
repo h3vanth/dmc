@@ -1,36 +1,36 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Stack from "@mui/material/Stack";
-import Switch from "@mui/material/Switch";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
-import Container from "@mui/material/Container";
-import AddIcon from "@mui/icons-material/Add";
-import { useForm } from "react-hook-form";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Stack from '@mui/material/Stack';
+import Switch from '@mui/material/Switch';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Container from '@mui/material/Container';
+import AddIcon from '@mui/icons-material/Add';
+import { useForm } from 'react-hook-form';
 
-import Dialog from "../../base/Dialog";
-import TextField from "../../base/TextField";
-import { useAppDispatch, useAppSelector } from "../../ducks";
-import { productActions } from "../../ducks/actions/products";
-import { categoriesActions } from "../../ducks/actions/categories";
-import { RESET_OPTIONS } from "../../constants/form";
+import Dialog from '../../base/Dialog';
+import TextField from '../../base/TextField';
+import { useAppDispatch, useAppSelector } from '../../ducks';
+import { productActions } from '../../ducks/actions/products';
+import { categoriesActions } from '../../ducks/actions/categories';
+import { RESET_OPTIONS } from '../../constants/form';
 
 // TODO: add the types file in tsconfig
-import { AddProductInputs } from "../../types";
+import { AddFoodItemInputs } from '../../types';
 
 const INITIAL_VALUES = {
-  productName: "",
+  productName: '',
   price: 0,
   availableQuantity: 0,
-  description: "",
+  description: '',
   isAvailable: false,
   files: undefined,
 };
 
-const AddProduct = ({
+const AddFoodItem = ({
   open,
   setOpen,
 }: {
@@ -44,8 +44,8 @@ const AddProduct = ({
     formState: { errors, isValid },
     watch,
     setValue,
-  } = useForm<AddProductInputs>({
-    mode: "all",
+  } = useForm<AddFoodItemInputs>({
+    mode: 'all',
     defaultValues: INITIAL_VALUES,
   });
   const dispatch = useAppDispatch();
@@ -55,16 +55,16 @@ const AddProduct = ({
   );
   const categoryRef = React.useRef<HTMLInputElement | null>(null);
   const [isAvailable, availableQuantity, files] = watch([
-    "isAvailable",
-    "availableQuantity",
-    "files",
+    'isAvailable',
+    'availableQuantity',
+    'files',
   ]);
   const invalidQuantity =
-    Number(availableQuantity) === 0 || !!errors?.["availableQuantity"];
+    Number(availableQuantity) === 0 || !!errors?.['availableQuantity'];
 
   React.useEffect(() => {
     if (invalidQuantity) {
-      setValue("isAvailable", false);
+      setValue('isAvailable', false);
     }
   }, [invalidQuantity]);
 
@@ -79,14 +79,14 @@ const AddProduct = ({
       return handleSubmit((data) => {
         const formData = new FormData();
 
-        formData.append("productName", data.productName);
-        formData.append("price", data.price.toString());
-        formData.append("availableQuantity", data.availableQuantity.toString());
-        formData.append("description", data.description ?? "");
-        formData.append("isAvailable", data.isAvailable.toString());
-        formData.append("categories", productCategories.join(","));
+        formData.append('productName', data.productName);
+        formData.append('price', data.price.toString());
+        formData.append('availableQuantity', data.availableQuantity.toString());
+        formData.append('description', data.description ?? '');
+        formData.append('isAvailable', data.isAvailable.toString());
+        formData.append('categories', productCategories.join(','));
 
-        if (data.files?.[0]) formData.append("image", data.files[0]);
+        if (data.files?.[0]) formData.append('image', data.files[0]);
 
         // TODO: check if passing success cb is ok
         dispatch(
@@ -104,7 +104,7 @@ const AddProduct = ({
   function addCategory() {
     if (categoryRef.current?.value) {
       dispatch(categoriesActions.addCategory(categoryRef.current.value));
-      categoryRef.current.value = "";
+      categoryRef.current.value = '';
     }
   }
 
@@ -113,81 +113,81 @@ const AddProduct = ({
       open={open}
       onClose={onClose}
       fullScreen={false}
-      buttonLabel="Add"
-      title="Add product"
+      buttonLabel='Add'
+      title='Add item'
       disableButton={!isValid}
     >
       <Box sx={{ minWidth: 300, p: 2 }}>
         <Stack>
           {files?.[0] && (
-            <Container sx={{ textAlign: "center" }}>
+            <Container sx={{ textAlign: 'center' }}>
               <img
                 src={URL.createObjectURL(files[0])}
-                alt="Uploaded image"
+                alt='Uploaded image'
                 style={{ maxWidth: 200, maxHeight: 200 }}
               />
             </Container>
           )}
           <TextField
-            label="Product name"
-            {...register("productName", {
+            label='Name'
+            {...register('productName', {
               required: true,
             })}
             error={!!errors.productName}
           />
           <TextField
-            label="Available quantity"
-            {...register("availableQuantity", {
+            label='Available quantity'
+            {...register('availableQuantity', {
               required: true,
               pattern: /^\d+$/,
             })}
             error={!!errors.availableQuantity}
           />
           <TextField
-            label="Price"
-            {...register("price", {
+            label='Price'
+            {...register('price', {
               required: true,
               pattern: /^([0-9]*[.])?[0-9]+$/,
             })}
             error={!!errors.price}
           />
-          <TextField label="Description" {...register("description")} />
+          <TextField label='Description' {...register('description')} />
           <TextField
-            label="Upload image"
+            label='Upload image'
             InputLabelProps={{
               shrink: true,
             }}
-            type="file"
+            type='file'
             inputProps={{
-              accept: "image/*",
+              accept: 'image/*',
             }}
-            {...register("files")}
+            {...register('files')}
           />
           <FormControlLabel
             control={
               <Switch
-                color="primary"
+                color='primary'
                 checked={isAvailable}
-                {...register("isAvailable", {
+                {...register('isAvailable', {
                   onChange: (event) => {
-                    setValue("isAvailable", !isAvailable);
+                    setValue('isAvailable', !isAvailable);
                   },
                 })}
               />
             }
-            label="Make it available"
-            labelPlacement="start"
+            label='Make it available'
+            labelPlacement='start'
             disabled={invalidQuantity}
           />
           <FormControl>
-            <InputLabel id="categories" variant="standard">
+            <InputLabel id='categories' variant='standard'>
               Categories
             </InputLabel>
             <Select
               multiple
-              labelId="categories"
-              label="Categories"
-              variant="standard"
+              labelId='categories'
+              label='Categories'
+              variant='standard'
               displayEmpty
               // use react-hook-form
               value={productCategories}
@@ -196,7 +196,7 @@ const AddProduct = ({
                   target: { value },
                 } = event;
                 setProductCategories(
-                  typeof value === "string" ? value.split(",") : value
+                  typeof value === 'string' ? value.split(',') : value
                 );
               }}
             >
@@ -208,14 +208,14 @@ const AddProduct = ({
             </Select>
           </FormControl>
           <TextField
-            placeholder="New category"
+            placeholder='New category'
             InputProps={{
               endAdornment: (
-                <AddIcon sx={{ cursor: "pointer" }} onClick={addCategory} />
+                <AddIcon sx={{ cursor: 'pointer' }} onClick={addCategory} />
               ),
             }}
             sx={{
-              width: "100%",
+              width: '100%',
             }}
             inputProps={{
               ref: categoryRef,
@@ -227,4 +227,4 @@ const AddProduct = ({
   );
 };
 
-export default AddProduct;
+export default AddFoodItem;

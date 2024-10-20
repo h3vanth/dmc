@@ -18,9 +18,9 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import EditableProductRow from './EditProduct';
+import EditableFoodItemRow from './EditableFoodItemRow';
 import { useAppDispatch, useAppSelector } from '../../ducks';
-import AddProduct from './AddProduct';
+import AddFoodItem from './AddFoodItem';
 import { productActions } from '../../ducks/actions/products';
 import { EnhancedTableProps, EnhancedTableToolbarProps } from '../../types';
 
@@ -41,20 +41,17 @@ const EnhancedTableHead: React.FC<EnhancedTableProps> = (props) => {
             }}
           />
         </TableCell>
-        {[
-          'Product name',
-          'Available quantity',
-          'Price (₹)',
-          'Availability status',
-        ].map((headCell) => (
-          <TableCell
-            key={headCell}
-            align={headCell === 'Availability status' ? 'center' : 'left'}
-            padding={'normal'}
-          >
-            {headCell}
-          </TableCell>
-        ))}
+        {['Name', 'Available quantity', 'Price (₹)', 'Availability status'].map(
+          (headCell) => (
+            <TableCell
+              key={headCell}
+              align={headCell === 'Availability status' ? 'center' : 'left'}
+              padding={'normal'}
+            >
+              {headCell}
+            </TableCell>
+          )
+        )}
         <TableCell />
       </TableRow>
     </TableHead>
@@ -88,20 +85,10 @@ const EnhancedTableToolbar: React.FC<EnhancedTableToolbarProps> = (props) => {
           {numSelected} selected
         </Typography>
       ) : (
-        <Grid container justifyContent='space-between'>
-          <Grid item>
-            <Typography
-              sx={{ flex: '1 1 100%' }}
-              variant='h6'
-              id='tableTitle'
-              component='div'
-            >
-              Products
-            </Typography>
-          </Grid>
+        <Grid container justifyContent='flex-end'>
           <Grid item>
             <Button color='primary' onClick={() => setOpenAddProduct(true)}>
-              Add product
+              Add
             </Button>
           </Grid>
         </Grid>
@@ -117,7 +104,7 @@ const EnhancedTableToolbar: React.FC<EnhancedTableToolbarProps> = (props) => {
   );
 };
 
-const EnhancedTable: React.FC = () => {
+const ManageFoodItems: React.FC = () => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -164,7 +151,7 @@ const EnhancedTable: React.FC = () => {
     <>
       <Box sx={{ width: '100%' }}>
         <Typography variant='h5' color='white' marginY={1}>
-          Manage products
+          Manage menu
         </Typography>
         <Paper sx={{ width: '100%', mb: 2 }}>
           <EnhancedTableToolbar
@@ -191,7 +178,7 @@ const EnhancedTable: React.FC = () => {
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
-                      <EditableProductRow
+                      <EditableFoodItemRow
                         key={product.productId}
                         selected={selected}
                         setSelected={setSelected}
@@ -224,9 +211,9 @@ const EnhancedTable: React.FC = () => {
           />
         </Paper>
       </Box>
-      <AddProduct open={openAddProduct} setOpen={setOpenAddProduct} />
+      <AddFoodItem open={openAddProduct} setOpen={setOpenAddProduct} />
     </>
   );
 };
 
-export default EnhancedTable;
+export default ManageFoodItems;

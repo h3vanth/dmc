@@ -1,10 +1,10 @@
-import * as React from "react";
-import { SxProps } from "@mui/material";
-import { Theme } from "@mui/system/createTheme";
-import Stomp from "stompjs";
+import * as React from 'react';
+import { SxProps } from '@mui/material';
+import { Theme } from '@mui/system/createTheme';
+import Stomp from 'stompjs';
 
-import { ProductAction } from "../constants/products";
-import { ALERT_SEVERITY, METHOD } from "../constants";
+import { ProductAction } from '../constants/products';
+import { ALERT_SEVERITY, METHOD } from '../constants';
 
 export interface SnackbarData {
   message: string;
@@ -100,7 +100,7 @@ export interface EditableProductRowProps {
   setSelected: React.Dispatch<React.SetStateAction<readonly string[]>>;
 }
 
-export interface AddProductInputs {
+export interface AddFoodItemInputs {
   productName: string;
   availableQuantity: number;
   price: number;
